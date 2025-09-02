@@ -11,7 +11,7 @@ function BottomBanner() {
         style={{ backgroundImage: `url(${bannerImg})` }}
       ></div>
       <div className="auto-container">
-        <h5>Working since 1992</h5>
+        <h5>Working since 2014</h5>
         <h2>
           Tuneup Your Car <br /> to Next Level
         </h2>

@@ -28,21 +28,21 @@ function ContactUs() {
           <div className="inner-column">
             <h4>Our Address</h4>
             <div className="text">
-              Completely synergize resource taxing relationships via premier niche markets.
-              Professionally cultivate one-to-one customer service.
+              Visit us at our office location below. We’re always ready to welcome you.
+
             </div>
             <ul>
               <li>
                 <i className="flaticon-pin"></i>
-                <span>Address:</span> 54B, Tailstoi Town 5238 MT, La city, IA 5224
+                <span>Address:</span> AddisAbeba, Ethiopia
               </li>
               <li>
                 <i className="flaticon-email"></i>
-                <span>Email:</span> contact@buildtruck.com
+                <span>Email:</span> jhonkidan.777@gmail.com
               </li>
               <li>
                 <i className="flaticon-phone"></i>
-                <span>Phone:</span> 1800 456 7890 / 1254 897 3654
+                <span>Phone:</span> +251 910 289 407 / +251 941 800 438
               </li>
             </ul>
           </div>

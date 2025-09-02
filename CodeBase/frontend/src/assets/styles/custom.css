@@ -318,4 +318,11 @@ input:disabled {
   font-weight: bold !important;    /* Optional: make active link bold */
 }
 
+.bgColor{
+  background-color: #000000;
+}
+.appbgColor{
+  background-color: #000000 !important;
+}
+
 

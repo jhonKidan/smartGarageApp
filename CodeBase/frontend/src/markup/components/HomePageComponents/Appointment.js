@@ -5,7 +5,7 @@ function Appointment() {
      
         <section className="cta-section">
             <div className="auto-container">
-                <div className="wrapper-box bgColor">
+                <div className="wrapper-box appbgColor">
                     <div className="left-column">
                         <h3>Schedule Your Appointment Today</h3>
                         <div className="text">Your Automotive Repair & Maintenance Service Specialist</div>

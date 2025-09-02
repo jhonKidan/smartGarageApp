@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';  
 import logoTwo from '../../../assets/images/logo-two.png';
 import iconBar from '../../../assets/images/icons/icon-bar.png';
-import customLogo from '../../../assets/images/custom/logo.png';
+import customLogo from '../../../assets/images/custom/image2.png';
 import loginService from '../../../services/login.service';
 import { useAuth } from '../../../Contexts/AuthContext';
 import '../../../assets/styles/custom.css';
@@ -23,7 +23,7 @@ function Header() {
         <div className="auto-container">
           <div className="inner-container headerBg">
             <div className="left-column">
-              <div className="text">Enjoy the Beso while we fix your car</div>
+              <div className="text">Smarter Service for Every Ride</div>
               <div className="office-hour">Monday - Saturday 7:00AM - 6:00PM</div>
             </div>
             <div className="right-column">
@@ -33,7 +33,7 @@ function Header() {
                 </div>
               ) : (
                 <div className="phone-number">
-                  Schedule Your Appointment Today : <strong>1800 456 7890</strong>
+                  Schedule Your Appointment Today : <strong>+251 910 289 407</strong>
                 </div>
               )}
             </div>
