@@ -1,133 +1,172 @@
 import React from 'react';
-// Import the Link component from react-router-dom 
-import { Link } from 'react-router-dom'
-// Import the logo image 
-import logo from '../../../assets/images/logo.png';
-// Import the login service to access the logout function
+import { NavLink } from 'react-router-dom';  
+import logoTwo from '../../../assets/images/logo-two.png';
+import iconBar from '../../../assets/images/icons/icon-bar.png';
+import customLogo from '../../../assets/images/custom/logo.png';
 import loginService from '../../../services/login.service';
-// Import the custom context hook 
 import { useAuth } from '../../../Contexts/AuthContext';
+import '../../../assets/styles/custom.css';
 
-
-function Header(props) {
-  // Use the custom hook to access the data in the context 
+function Header() {
   const { isLogged, setIsLogged, employee } = useAuth();
-  // console.log(useAuth());
 
-  // Log out event handler function
   const logOut = () => {
-    // Call the logout function from the login service 
     loginService.logOut();
-    // Set the isLogged state to false 
     setIsLogged(false);
-  }
+  };
 
   return (
-    <div>
-      <header className="main-header header-style-one">
-        <div className="header-top">
-          <div className="auto-container">
-            <div className="inner-container">
-              <div className="left-column">
-                <div className="text">Enjoy the Beso while we fix your car</div>
-                <div className="office-hour">Monday - Saturday 7:00AM - 6:00PM</div>
+    <header className="main-header header-style-one">
+
+      {/* Header Top */}
+      <div className="header-top">
+        <div className="auto-container">
+          <div className="inner-container headerBg">
+            <div className="left-column">
+              <div className="text">Enjoy the Beso while we fix your car</div>
+              <div className="office-hour">Monday - Saturday 7:00AM - 6:00PM</div>
+            </div>
+            <div className="right-column">
+              {isLogged ? (
+                <div className="phone-number">
+                  Welcome <strong>{employee?.employee_first_name}</strong>
+                </div>
+              ) : (
+                <div className="phone-number">
+                  Schedule Your Appointment Today : <strong>1800 456 7890</strong>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Upper */}
+      <div className="header-upper">
+        <div className="auto-container">
+          <div className="inner-container">
+            {/* Logo */}
+            <div className="logo-box">
+              <div className="logo">
+                <NavLink to="/"><img src={customLogo} alt="Logo" /></NavLink> {/* optional to use NavLink here */}
               </div>
-              <div className="right-column">
-                {isLogged ? (
-                  <div className="link-btn">
-                    <div className="phone-number"><strong>Welcome {employee?.employee_first_name}</strong></div>
+            </div>
+
+            {/* Right Column */}
+            <div className="right-column">
+              {/* Nav Box */}
+              <div className="nav-outer">
+                <div className="mobile-nav-toggler">
+                  <img src={iconBar} alt="Menu" />
+                </div>
+
+                {/* Main Menu */}
+                <nav className="main-menu navbar-expand-md navbar-light">
+                  <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
+                    <ul className="navigation">
+                      <li>
+                        <NavLink exact to="/" activeClassName="active">Home</NavLink>
+                      </li>
+                      <li>
+                        <NavLink to="/about" activeClassName="active">About Us</NavLink>
+                      </li>
+                      <li>
+                        <NavLink to="/services" activeClassName="active">Services</NavLink>
+                      </li>
+                      <li>
+                        <NavLink to="/contact" activeClassName="active">Contact Us</NavLink>
+                      </li>
+                    </ul>
                   </div>
+                </nav>
+              </div>
+
+              <div className="search-btn"></div>
+
+              <div className="link-btn">
+                {isLogged ? (
+                  <NavLink to="/" className="theme-btn btn-style-one blue" onClick={logOut}>Log out</NavLink>
                 ) : (
-                  <div className="phone-number">Schedule Appointment: <strong>1800 456 7890   </strong> </div>
+                  <NavLink to="/login" className="theme-btn btn-style-one">Login</NavLink>
                 )}
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Sticky Header */}
+      <div className="sticky-header">
         <div className="header-upper">
           <div className="auto-container">
             <div className="inner-container">
               <div className="logo-box">
-                <div className="logo"><a href="/"><img src={logo} alt="" /></a>
-                </div>
+                <NavLink to="/"><img src={customLogo} alt="Sticky Logo" /></NavLink>
               </div>
+              <nav className="main-menu navbar-expand-md navbar-light">
+                <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
+                  <ul className="navigation">
+                    <li>
+                      <NavLink exact to="/" activeClassName="active">Home</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/about" activeClassName="active">About Us</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/services" activeClassName="active">Services</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/contact" activeClassName="active">Contact Us</NavLink>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
               <div className="right-column">
                 <div className="nav-outer">
-                  <div className="mobile-nav-toggler"><img src="assets/images/icons/icon-bar.png" alt="" />
+                  <div className="mobile-nav-toggler">
+                    <img src={iconBar} alt="Menu" />
                   </div>
                   <nav className="main-menu navbar-expand-md navbar-light">
-                    <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
-                      <ul className="navigation">
-                        <li className="dropdown"><a href="/">Home</a>
-                        </li>
-                        <li className="dropdown"><a href="/about">About Us</a>
-                        </li>
-                        <li className="dropdown"><a href="/services">Services</a>
-                        </li>
-                        <li><a href="/contact">Contact Us</a></li>
-                      </ul>
-                    </div>
+                    {/* Can add sticky menu here if needed */}
                   </nav>
                 </div>
                 <div className="search-btn"></div>
-                {isLogged ? (
-                  <div className="link-btn">
-                    <Link to="/" className="theme-btn btn-style-one blue" onClick={logOut} >Log out</Link>
-                  </div>
-                ) : (
-                  <div className="link-btn">
-                    <Link to="/login" className="theme-btn btn-style-one">Login</Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="sticky-header">
-          <div className="header-upper">
-            <div className="auto-container">
-              <div className="inner-container">
-                <div className="logo-box">
-                  <div className="logo"><a href="/"><img src="assets/images/custom/logo.png" alt="" /></a>
-                  </div>
-                </div>
-                <div className="right-column">
-                  <div className="nav-outer">
-                    <div className="mobile-nav-toggler"><img src="assets/images/icons/icon-bar.png" alt="" />
-                    </div>
-
-                    <nav className="main-menu navbar-expand-md navbar-light">
-                    </nav>
-                  </div>
-                  <div className="search-btn"></div>
-                  <div className="link-btn"><a href="/login" className="theme-btn btn-style-one">Login</a>
-                  </div>
+                <div className="link-btn">
+                  {isLogged ? (
+                    <NavLink to="/" className="theme-btn btn-style-one blue" onClick={logOut}>Log out</NavLink>
+                  ) : (
+                    <NavLink to="/login" className="theme-btn btn-style-one">Login</NavLink>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="mobile-menu">
-          <div className="menu-backdrop"></div>
-          <div className="close-btn"><span className="icon flaticon-remove"></span></div>
+      </div>
 
-          <nav className="menu-box">
-            <div className="nav-logo"><a href="index.html">
-              <img src="assets/images/logo-two.png" alt=""
-                title="" /></a></div>
-            <div className="menu-outer">
+      {/* Mobile Menu */}
+      <div className="mobile-menu">
+        <div className="menu-backdrop"></div>
+        <div className="close-btn"><span className="icon flaticon-remove"></span></div>
 
-            </div>
+        <nav className="menu-box">
+          <div className="nav-logo">
+            <NavLink to="/">
+              <img src={logoTwo} alt="Mobile Logo" />
+            </NavLink>
+          </div>
+          <div className="menu-outer">
+            {/* Menu will be generated via JavaScript if needed */}
+          </div>
+        </nav>
+      </div>
 
-          </nav>
-        </div>
-
-        <div className="nav-overlay">
-          <div className="cursor"></div>
-          <div className="cursor-follower"></div>
-        </div>
-      </header>
-    </div>
+      {/* Nav Overlay */}
+      <div className="nav-overlay">
+        <div className="cursor"></div>
+        <div className="cursor-follower"></div>
+      </div>
+    </header>
   );
 }
 

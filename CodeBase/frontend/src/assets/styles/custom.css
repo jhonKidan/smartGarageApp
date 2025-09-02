@@ -306,3 +306,16 @@ input:disabled {
   margin-bottom: 10px;
   font-size: 15px;
 }
+
+.headerBg {
+  background-color: #000000;
+}
+.collapse navbar-collapse show clearfix li:hover{
+  color: #ee0c0a;
+}
+.navigation .active {
+  color: darkred !important;           /* Change active nav link color */
+  font-weight: bold !important;    /* Optional: make active link bold */
+}
+
+
