@@ -10,6 +10,7 @@ import Contact from "./markup/pages/contact";
 import Login from "./markup/pages/Login";
 import Admin from "./markup/pages/admin/AdminDashboard";
 import AddEmployee from './markup/pages/admin/AddEmployee';
+import AddCustomer from './markup/pages/admin/AddCustomer';
 import Unauthorized from './markup/pages/Unauthorized';
 // Import the Orders and Customers components 
 import Orders from './markup/pages/admin/Orders';
@@ -67,6 +68,13 @@ function App() {
           element={
             <PrivateAuthRoute roles={[3]}>
               <AddEmployee />
+            </PrivateAuthRoute>
+          } />
+{/* // Add the Add Customer Route */}
+           <Route path="/admin/add-customer"
+          element={
+            <PrivateAuthRoute roles={[2,3]}>
+              <AddCustomer />
             </PrivateAuthRoute>
           } />
         {/* 
