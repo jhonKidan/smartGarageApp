@@ -16,8 +16,23 @@ const createCustomer = async (formData, loggedInEmployeeToken) => {
   return response;
 };
 
+
+// A function to send get request to get all customers
+const getAllCustomers = async (token) => {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': token
+    }
+  };
+  const response = await fetch(`${api_url}/api/customers`, requestOptions);
+  return response;
+};
+
 const customerService = {
   createCustomer,
+  getAllCustomers
 };
 
 export default customerService;

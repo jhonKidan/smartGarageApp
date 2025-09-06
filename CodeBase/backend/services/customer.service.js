@@ -65,8 +65,31 @@ async function createCustomer(customer) {
   // Return the created customer object
   return createdCustomer;
 }
+
+// Get All Customers
+async function getAllCustomers() {
+  const query = `
+    SELECT 
+      ci.customer_id,
+      ci.customer_email,
+      ci.customer_phone_number,
+      ci.customer_added_date,
+      ci.customer_hash,
+      info.customer_first_name,
+      info.customer_last_name,
+      info.active_customer_status
+    FROM customer_identifier ci
+    INNER JOIN customer_info info ON ci.customer_id = info.customer_id
+    ORDER BY ci.customer_id DESC
+    LIMIT 10;
+  `;
+
+  const rows = await conn.query(query);
+  return rows;
+}
 // Export the functions
 module.exports = {
   checkIfCustomerExists,
-  createCustomer
+  createCustomer,
+  getAllCustomers
 };

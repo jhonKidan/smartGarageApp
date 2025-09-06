@@ -32,7 +32,33 @@ async function createCustomer(req, res, next) {
         }
       }
 }
+
+// Controller: Get All Customers
+async function getAllCustomers(req, res, next) {
+  try {
+    const customers = await customerService.getAllCustomers();
+
+    if (!customers || customers.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No customers found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: customers,
+    });
+  } catch (err) {
+    console.error("Error in getAllCustomers:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to fetch customers",
+    });
+  }
+}
 //// Export the createCustomer controller 
 module.exports = {
-    createCustomer
+    createCustomer,
+    getAllCustomers
 };

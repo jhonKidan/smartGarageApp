@@ -14,9 +14,10 @@ import AddCustomer from './markup/pages/admin/AddCustomer';
 import Unauthorized from './markup/pages/Unauthorized';
 // Import the Orders and Customers components 
 import Orders from './markup/pages/admin/Orders';
-import Customers from './markup/pages/admin/Customers';
+
 // Import the Employees component 
 import Employees from './markup/pages/admin/Employees';
+import Customers from './markup/pages/admin/Customers';
 
 // Import the css files 
 import "./assets/template_assets/css/bootstrap.css";
@@ -62,6 +63,8 @@ function App() {
               <Customers />
             </PrivateAuthRoute>
           } />
+          <Route path="/admin/customers" element={<Customers />} />
+
         {/* // Add the Employees Route  */}
         <Route path="/admin/employees" element={<Employees />} />
         <Route path="/admin/add-employee"
