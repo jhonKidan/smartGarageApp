@@ -48,7 +48,7 @@ function Header() {
             {/* Logo */}
             <div className="logo-box">
               <div className="logo">
-                <NavLink to="/"><img src={customLogo} alt="Logo" /></NavLink> {/* optional to use NavLink here */}
+                <NavLink to="/admin/dashboard"><img src={customLogo} alt="Logo" /></NavLink> {/* optional to use NavLink here */}
               </div>
             </div>
 
@@ -101,7 +101,7 @@ function Header() {
           <div className="auto-container">
             <div className="inner-container">
               <div className="logo-box">
-                <NavLink to="/"><img src={customLogo} alt="Sticky Logo" /></NavLink>
+                <NavLink to="/admin"><img src={customLogo} alt="Sticky Logo" /></NavLink>
               </div>
               <nav className="main-menu navbar-expand-md navbar-light">
                 <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
