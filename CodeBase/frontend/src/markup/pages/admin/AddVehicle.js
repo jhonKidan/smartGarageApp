@@ -6,9 +6,11 @@ import LoginForm from '../../components/LoginForm/LoginForm';
 // Import the admin menu component
 import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
 //import the vehicle components
-import VehicleList from "../../components/Admin/Vehicle/VehicleList";
-import VehicleForm from "../../components/Admin/Vehicle/VehicleForm";
-import CustomerDetails from "../../components/Admin/Vehicle/CustomerDetails";
+
+
+
+
+
 function AddVehicle() {
   // Destructure the auth hook 
   const { isLogged, isAdmin, } = useAuth();
@@ -24,9 +26,9 @@ function AddVehicle() {
                 <AdminMenu />
               </div>
               <div className="col-md-9 admin-right-side">
-                <CustomerDetails />
-                <VehicleList />
-                <VehicleForm />
+               
+            
+               
               </div>
             </div>
           </div>

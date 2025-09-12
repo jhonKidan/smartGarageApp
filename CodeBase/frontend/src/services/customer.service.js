@@ -1,7 +1,7 @@
 // Import from the env 
 const api_url = process.env.REACT_APP_API_URL;
 
-// A function to send post request to create a new customer 
+// Create customer
 const createCustomer = async (formData, loggedInEmployeeToken) => {
   const requestOptions = {
     method: 'POST',
@@ -11,13 +11,11 @@ const createCustomer = async (formData, loggedInEmployeeToken) => {
     },
     body: JSON.stringify(formData)
   };
-  console.log("Requesting:", requestOptions);
   const response = await fetch(`${api_url}/api/customer`, requestOptions);
   return response;
 };
 
-
-// A function to send get request to get all customers
+// Get all customers
 const getAllCustomers = async (token) => {
   const requestOptions = {
     method: 'GET',
@@ -30,9 +28,28 @@ const getAllCustomers = async (token) => {
   return response;
 };
 
+// 🔹 Search customers by name/email/phone
+const searchCustomers = async (token, query) => {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': token
+    }
+  };
+  const response = await fetch(
+    `${api_url}/api/customers/search?q=${encodeURIComponent(query)}`,
+    requestOptions
+  );
+  return response;
+};
+
 const customerService = {
   createCustomer,
-  getAllCustomers
+  getAllCustomers,
+  searchCustomers, // 🔹 fixed name
 };
 
 export default customerService;
+
+

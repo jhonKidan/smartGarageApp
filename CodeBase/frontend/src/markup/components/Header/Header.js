@@ -29,7 +29,7 @@ function Header() {
             <div className="right-column">
               {isLogged ? (
                 <div className="phone-number">
-                  Welcome <strong>{employee?.employee_first_name}</strong>
+                  Welcome :<strong>{employee?.employee_first_name}</strong>
                 </div>
               ) : (
                 <div className="phone-number">

@@ -5,9 +5,9 @@ function Dashboard() {
    <section className="services-section">
             <div className="auto-container">
                 <div className="sec-title style-two">
-                    <h2>Our Featured Services</h2>
+                    <h2>Admin Dashboard</h2>
                     <div className="text">The order management panel provides an overview of all customer orders. Admins can monitor, update, and organize requests from here.
- </div>
+                    </div>
                 </div>
                 <div className="row">
                     <div className="col-lg-4 service-block-one">

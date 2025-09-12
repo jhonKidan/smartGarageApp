@@ -18,6 +18,7 @@ import Employees from './markup/pages/admin/Employees';
 import Customers from './markup/pages/admin/Customers';
 import AddVehicle from './markup/pages/admin/AddVehicle';
 
+
 // Styles
 import "./assets/template_assets/css/bootstrap.css";
 import "./assets/template_assets/css/style.css";
@@ -42,6 +43,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/admin/add-vehicle" element={<AddVehicle />} />
+        
 
         {/* Admin Routes (Role 3) */}
         <Route
@@ -109,15 +112,9 @@ function App() {
           }
         />
 
-        {/* Add Vehicle (all roles) */}
-        <Route
-          path="/admin/customers/add-vehicle"
-          element={
-            <PrivateAuthRoute roles={[1, 2, 3]}>
-              <AddVehicle />
-            </PrivateAuthRoute>
-          }
-        />
+        
+        
+        
 
         {/* Employees (Admin only) */}
         <Route
