@@ -35,6 +35,8 @@ const ServicesList = () => {
       <div className="auto-container">
         <div className="contact-title">
           <h2>Services we provide</h2>
+           <div className="text">Whether it’s a quick oil change, brake repair, or a complex engine check, our team is here to help. We make car maintenance easy, affordable, and stress-free.
+                    </div>
         </div>
 
         {apiError ? (
