@@ -17,6 +17,7 @@ import Orders from './markup/pages/admin/Orders';
 import Employees from './markup/pages/admin/Employees';
 import Customers from './markup/pages/admin/Customers';
 import AddVehicle from './markup/pages/admin/AddVehicle';
+import AddService from './markup/pages/admin/AddService';
 
 
 // Styles
@@ -44,6 +45,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/admin/add-vehicle" element={<AddVehicle />} />
+        <Route path="/admin/services" element={<AddService />} />
         
 
         {/* Admin Routes (Role 3) */}
