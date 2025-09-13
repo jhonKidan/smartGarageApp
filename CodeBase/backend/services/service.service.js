@@ -1,6 +1,7 @@
+
 const conn = require("../config/db.config");
 
-// Insert new service into DB
+// Create a new service
 async function createService(service) {
   try {
     const query = `
@@ -12,9 +13,7 @@ async function createService(service) {
       service.service_description || null
     ]);
 
-    if (rows.affectedRows !== 1) {
-      return false;
-    }
+    if (rows.affectedRows !== 1) return false;
 
     return {
       service_id: rows.insertId,
@@ -27,6 +26,19 @@ async function createService(service) {
   }
 }
 
+// Get all services
+async function getAllServices() {
+  const query = `
+    SELECT service_id, service_name, service_description
+    FROM common_services
+    ORDER BY service_id DESC
+    LIMIT 20;
+  `;
+  const rows = await conn.query(query);
+  return rows;
+}
+
 module.exports = {
   createService,
+  getAllServices
 };

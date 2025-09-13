@@ -1,14 +1,16 @@
-// Import the express module
 const express = require('express');
 const router = express.Router();
-
-// Import controller
 const serviceController = require('../controllers/service.controller');
-
-// Auth middleware (if needed, same as customer)
 const authMiddleware = require("../middlewares/auth.middleware");
 
-// Create service route
+// Create service
 router.post("/api/service", serviceController.createService);
+
+// Get all services (only admin allowed)
+router.get(
+  "/api/services",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  serviceController.getAllServices
+);
 
 module.exports = router;
