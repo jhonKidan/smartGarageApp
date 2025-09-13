@@ -5,7 +5,8 @@ import { useAuth } from "../../../Contexts/AuthContext";
 import LoginForm from '../../components/LoginForm/LoginForm';
 // Import the admin menu component
 import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
-//import the vehicle components
+//import add vehicles page
+import AddVehiclePage from "../../components/Admin/AddVehiclePage";
 
 
 
@@ -27,7 +28,7 @@ function AddVehicle() {
               </div>
               <div className="col-md-9 admin-right-side">
                
-            
+                <AddVehiclePage />
                
               </div>
             </div>
