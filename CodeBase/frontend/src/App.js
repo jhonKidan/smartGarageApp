@@ -13,11 +13,12 @@ import AdminDashboard from "./markup/pages/admin/AdminDashboard";
 import AddEmployee from './markup/pages/admin/AddEmployee';
 import AddCustomer from './markup/pages/admin/AddCustomer';
 import Unauthorized from './markup/pages/Unauthorized';
-import Orders from './markup/pages/admin/Orders';
 import Employees from './markup/pages/admin/Employees';
 import Customers from './markup/pages/admin/Customers';
 import AddVehicle from './markup/pages/admin/AddVehicle';
 import AddService from './markup/pages/admin/AddService';
+ import AddOrders from './markup/pages/admin/Orders';
+import AllOrders from './markup/pages/admin/AllOrders';
 
 
 // Styles
@@ -46,6 +47,8 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/admin/add-vehicle" element={<AddVehicle />} />
         <Route path="/admin/services" element={<AddService />} />
+         <Route path="/admin/add-orders" element={<AddOrders />} />
+          <Route path="/admin/orders" element={<AllOrders />} />
         
 
         {/* Admin Routes (Role 3) */}
@@ -105,14 +108,16 @@ function App() {
         />
 
         {/* Shared Routes (Admin + Manager) */}
-        <Route
+        {/* <Route
+
+
           path="/admin/orders"
           element={
             <PrivateAuthRoute roles={[2, 3]}>
               <Orders />
             </PrivateAuthRoute>
           }
-        />
+        /> */}
 
         
         

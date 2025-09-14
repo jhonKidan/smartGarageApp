@@ -80,7 +80,7 @@ async function getAllCustomers() {
   return rows;
 }
 
-// 🔹 Search Customers by name, phone, or email
+// Search Customers by name, phone, or email
 async function searchCustomers(searchTerm) {
   const query = `
     SELECT 
@@ -112,10 +112,28 @@ async function searchCustomers(searchTerm) {
   return rows;
 }
 
-// Export the functions
+// Get Customer by ID
+async function getCustomerById(customerId) {
+  const query = `
+    SELECT 
+      ci.customer_id,
+      ci.customer_email,
+      ci.customer_phone_number,
+      info.customer_first_name,
+      info.customer_last_name,
+      info.active_customer_status
+    FROM customer_identifier ci
+    INNER JOIN customer_info info ON ci.customer_id = info.customer_id
+    WHERE ci.customer_id = ?
+  `;
+  const rows = await conn.query(query, [customerId]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
 module.exports = {
   checkIfCustomerExists,
   createCustomer,
   getAllCustomers,
-  searchCustomers, // 🔹 added new search
+  searchCustomers,
+  getCustomerById
 };

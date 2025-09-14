@@ -5,14 +5,14 @@ import { useAuth } from "../../../Contexts/AuthContext";
 import LoginForm from '../../components/LoginForm/LoginForm';
 // Import the admin menu component
 import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
-//import add vehicles page
-import CreateOrderPage from "../../components/Admin/CreateOrderPage";
+//import allorders page
+import AllOrderPage from "../../components/Admin/AllOrdersPage";
 
 
 
 
 
-function Orders() {
+function AllOrders() {
   // Destructure the auth hook 
   const { isLogged, isAdmin, } = useAuth();
 
@@ -28,7 +28,7 @@ function Orders() {
               </div>
               <div className="col-md-9 admin-right-side">
                
-                <CreateOrderPage />
+                <AllOrderPage />
                
               </div>
             </div>
@@ -52,4 +52,4 @@ function Orders() {
 
 }
 
-export default Orders; 
+export default AllOrders; 

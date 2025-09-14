@@ -338,5 +338,12 @@ input:disabled {
   background-color: #000000 !important;
   
 }
+.btn-danger{
+  background-color: #282B2E !important;
+}
+.card-header{
+  background-color: #414141 !important;
+ 
+}
 
 

@@ -62,8 +62,29 @@ async function addVehicle(customerId, vehicle) {
   return createdVehicle;
 }
 
-// Export the functions
+// Get Vehicle by ID
+async function getVehicleById(vehicleId) {
+  const query = `
+    SELECT 
+      vehicle_id,
+      customer_id,
+      vehicle_year,
+      vehicle_make,
+      vehicle_model,
+      vehicle_type,
+      vehicle_mileage,
+      vehicle_tag,
+      vehicle_serial,
+      vehicle_color
+    FROM customer_vehicle_info 
+    WHERE vehicle_id = ?
+  `;
+  const rows = await conn.query(query, [vehicleId]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
 module.exports = {
   getVehiclesByCustomer,
   addVehicle,
+  getVehicleById
 };
