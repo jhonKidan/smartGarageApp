@@ -13,4 +13,18 @@ router.get(
   serviceController.getAllServices
 );
 
+// NEW: Update service
+router.put(
+  "/api/service/:id",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  serviceController.updateService
+);
+
+// NEW: Delete service
+router.delete(
+  "/api/service/:id",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  serviceController.deleteService
+);
+
 module.exports = router;

@@ -1,4 +1,3 @@
-
 const conn = require("../config/db.config");
 
 // Create a new service
@@ -38,7 +37,47 @@ async function getAllServices() {
   return rows;
 }
 
+// NEW: Update service
+async function updateService(id, serviceData) {
+  try {
+    const { service_name, service_description } = serviceData;
+    const query = `
+      UPDATE common_services 
+      SET service_name = ?, service_description = ?
+      WHERE service_id = ?
+    `;
+    const rows = await conn.query(query, [service_name, service_description || null, id]);
+    if (rows.affectedRows !== 1) return false;
+
+    return {
+      service_id: id,
+      service_name,
+      service_description,
+    };
+  } catch (err) {
+    console.error("Error updating service:", err);
+    return false;
+  }
+}
+
+// NEW: Delete service
+async function deleteService(id) {
+  try {
+    const query = `
+      DELETE FROM common_services 
+      WHERE service_id = ?
+    `;
+    const rows = await conn.query(query, [id]);
+    return rows.affectedRows === 1;
+  } catch (err) {
+    console.error("Error deleting service:", err);
+    return false;
+  }
+}
+
 module.exports = {
   createService,
-  getAllServices
+  getAllServices,
+  updateService,
+  deleteService,
 };
