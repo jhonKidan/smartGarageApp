@@ -1,12 +1,12 @@
 import React from 'react'
 
-function FeatureService() {
+function FeatureService({ pageTitle = "Our Featured Services" ,headerText="From routine maintenance to advanced diagnostics, our featured services cover everything your vehicle needs. Enjoy quick bookings, real-time updates, and expert care—all designed to keep you moving with confidence."}) {
   return (
     <section className="services-section">
             <div className="auto-container">
                 <div className="sec-title style-two">
-                    <h2>Our Featured Services</h2>
-                    <div className="text">From routine maintenance to advanced diagnostics, our featured services cover everything your vehicle needs. Enjoy quick bookings, real-time updates, and expert care—all designed to keep you moving with confidence. </div>
+                    <h2>{pageTitle}</h2>
+                    <div className="text">{headerText} </div>
                 </div>
                 <div className="row">
                     <div className="col-lg-4 service-block-one">

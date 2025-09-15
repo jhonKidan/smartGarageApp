@@ -36,10 +36,11 @@ function ContactUs() {
                 <i className="flaticon-pin"></i>
                 <span>Address:</span> AddisAbeba, Ethiopia
               </li>
-              <li>
-                <i className="flaticon-email"></i>
-                <span>Email:</span> jhonkidan.777@gmail.com
-              </li>
+               <li>
+        <i className="flaticon-email"></i>
+        <span>Email:</span> 
+        <a href="mailto:jhonkidan.777@gmail.com">jhonkidan.777@gmail.com</a>
+      </li>
               <li>
                 <i className="flaticon-phone"></i>
                 <span>Phone:</span> +251 910 289 407 / +251 941 800 438

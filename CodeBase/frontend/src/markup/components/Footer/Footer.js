@@ -23,7 +23,7 @@ function Footer(props) {
                     <span className="flaticon-email"></span>
                   </div>
                   <div className="text">Email us : <br /> <a
-                    href="mailto:contact.contact@autorex.com">jhonkidan.777@gmail.com</a></div>
+                    href="jhonkidan.777@gmail.com">jhonkidan.777@gmail.com</a></div>
                 </div>
               </div>
             </div>
@@ -93,9 +93,9 @@ function Footer(props) {
                   <div className="newsletter-form">
                   </div>
                   <ul className="social-links">
-                    <li><a href="#"><span className="fab fa-facebook-f"></span></a></li>
-                    <li><a href="#"><span className="fab fa-linkedin-in"></span></a></li>
-                    <li><a href="#"><span className="fab fa-twitter"></span></a></li>
+                    <li><a href="https://www.facebook.com/jhonkidan.777"><span className="fab fa-facebook-f"></span></a></li>
+                    <li><a href="https://www.linkedin.com/in/yohannes"><span className="fab fa-linkedin-in"></span></a></li>
+                    <li><a href=""><span className="fab fa-twitter"></span></a></li>
                     <li><a href="#"><span className="fab fa-google-plus-g"></span></a></li>
                   </ul>
                 </div>
@@ -106,7 +106,7 @@ function Footer(props) {
       </div>
       <div className="auto-container">
         <div className="footer-bottom">
-          <div className="copyright-text">© Copyright <a href="#">Smart Garage</a> 2025 . All right reserved.</div>
+          <div className="copyright-text">© Copyright <a href="/home">Smart Garage</a> 2025 . All right reserved.</div>
         </div>
       </div>
     </footer>
