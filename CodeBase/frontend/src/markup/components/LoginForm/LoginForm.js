@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import loginService from '../../../services/login.service';
+import '../../../assets/styles/custom.css';
 
 function LoginForm() {
   const navigate = useNavigate();

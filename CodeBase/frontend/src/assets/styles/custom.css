@@ -345,5 +345,8 @@ input:disabled {
   background-color: #414141 !important;
  
 }
+.theme-btn{
+border-radius: 10px !important;
+}
 
 
