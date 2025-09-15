@@ -90,9 +90,60 @@ async function searchCustomers(req, res, next) {
   }
 }
 
+// NEW: Update Customer
+async function updateCustomer(req, res, next) {
+  const { id } = req.params;
+  const customerData = req.body;
+  try {
+    const customer = await customerService.updateCustomer(id, customerData);
+    if (!customer) {
+      return res.status(404).json({
+        status: "error",
+        message: "Customer not found",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      data: customer,
+    });
+  } catch (err) {
+    console.error("Error in updateCustomer:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to update customer",
+    });
+  }
+}
+
+// NEW: Delete Customer
+async function deleteCustomer(req, res, next) {
+  const { id } = req.params;
+  try {
+    const deleted = await customerService.deleteCustomer(id);
+    if (!deleted) {
+      return res.status(404).json({
+        status: "error",
+        message: "Customer not found",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      message: "Customer deleted successfully",
+    });
+  } catch (err) {
+    console.error("Error in deleteCustomer:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to delete customer",
+    });
+  }
+}
+
 //// Export controllers
 module.exports = {
   createCustomer,
   getAllCustomers,
-  searchCustomers, // 🔹 export new controller
+  searchCustomers,
+  updateCustomer,
+  deleteCustomer,
 };

@@ -14,11 +14,9 @@ async function checkIfCustomerExists(email) {
 async function createCustomer(customer) {
   let createdCustomer = {};
   try {
-    // Generate a hash for customer (can be used as unique identifier)
     const salt = await bcrypt.genSalt(10);
     const customerHash = await bcrypt.hash(customer.customer_email + Date.now(), salt);
 
-    // 1. Insert into customer_identifier
     const query1 = `
       INSERT INTO customer_identifier (customer_email, customer_phone_number, customer_hash) 
       VALUES (?, ?, ?)
@@ -35,7 +33,6 @@ async function createCustomer(customer) {
 
     const customer_id = rows1.insertId;
 
-    // 2. Insert into customer_info
     const query2 = `
       INSERT INTO customer_info (customer_id, customer_first_name, customer_last_name, active_customer_status) 
       VALUES (?, ?, ?, ?)
@@ -130,10 +127,43 @@ async function getCustomerById(customerId) {
   return rows.length > 0 ? rows[0] : null;
 }
 
+// NEW: Update Customer
+async function updateCustomer(id, customerData) {
+  try {
+    const { customer_email, customer_phone_number, customer_first_name, customer_last_name, active_customer_status } = customerData;
+    const query1 = "UPDATE customer_identifier SET customer_email = ?, customer_phone_number = ? WHERE customer_id = ?";
+    const rows1 = await conn.query(query1, [customer_email, customer_phone_number, id]);
+    if (rows1.affectedRows !== 1) return false;
+
+    const query2 = "UPDATE customer_info SET customer_first_name = ?, customer_last_name = ?, active_customer_status = ? WHERE customer_id = ?";
+    const rows2 = await conn.query(query2, [customer_first_name, customer_last_name, active_customer_status, id]);
+    return { customer_id: id };
+  } catch (err) {
+    console.error("Error updating customer:", err);
+    return false;
+  }
+}
+
+// NEW: Delete Customer
+async function deleteCustomer(id) {
+  try {
+    const query1 = "DELETE FROM customer_info WHERE customer_id = ?";
+    const rows1 = await conn.query(query1, [id]);
+    const query2 = "DELETE FROM customer_identifier WHERE customer_id = ?";
+    const rows2 = await conn.query(query2, [id]);
+    return rows2.affectedRows === 1;
+  } catch (err) {
+    console.error("Error deleting customer:", err);
+    return false;
+  }
+}
+
 module.exports = {
   checkIfCustomerExists,
   createCustomer,
   getAllCustomers,
   searchCustomers,
-  getCustomerById
+  getCustomerById,
+  updateCustomer,
+  deleteCustomer,
 };

@@ -21,4 +21,18 @@ router.get(
   customerController.searchCustomers
 );
 
+// NEW: Update customer
+router.put(
+  "/api/customer/:id",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  customerController.updateCustomer
+);
+
+// NEW: Delete customer
+router.delete(
+  "/api/customer/:id",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  customerController.deleteCustomer
+);
+
 module.exports = router;

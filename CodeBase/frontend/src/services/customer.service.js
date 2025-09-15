@@ -4,12 +4,12 @@ const api_url = process.env.REACT_APP_API_URL;
 // Create customer
 const createCustomer = async (formData, loggedInEmployeeToken) => {
   const requestOptions = {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'x-access-token': loggedInEmployeeToken
+      "Content-Type": "application/json",
+      "x-access-token": loggedInEmployeeToken,
     },
-    body: JSON.stringify(formData)
+    body: JSON.stringify(formData),
   };
   const response = await fetch(`${api_url}/api/customer`, requestOptions);
   return response;
@@ -18,11 +18,11 @@ const createCustomer = async (formData, loggedInEmployeeToken) => {
 // Get all customers
 const getAllCustomers = async (token) => {
   const requestOptions = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-      'x-access-token': token
-    }
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
   };
   const response = await fetch(`${api_url}/api/customers`, requestOptions);
   return response;
@@ -31,11 +31,11 @@ const getAllCustomers = async (token) => {
 // 🔹 Search customers by name/email/phone
 const searchCustomers = async (token, query) => {
   const requestOptions = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-      'x-access-token': token
-    }
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
   };
   const response = await fetch(
     `${api_url}/api/customers/search?q=${encodeURIComponent(query)}`,
@@ -44,10 +44,39 @@ const searchCustomers = async (token, query) => {
   return response;
 };
 
+// NEW: Update customer
+const updateCustomer = async (token, id, customerData) => {
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+    body: JSON.stringify(customerData),
+  };
+  const response = await fetch(`${api_url}/api/customer/${id}`, requestOptions);
+  return response;
+};
+
+// NEW: Delete customer
+const deleteCustomer = async (token, id) => {
+  const requestOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+  };
+  const response = await fetch(`${api_url}/api/customer/${id}`, requestOptions);
+  return response;
+};
+
 const customerService = {
   createCustomer,
   getAllCustomers,
-  searchCustomers, // 🔹 fixed name
+  searchCustomers,
+  updateCustomer,
+  deleteCustomer,
 };
 
 export default customerService;
