@@ -19,6 +19,7 @@ import AddVehicle from './markup/pages/admin/AddVehicle';
 import AddService from './markup/pages/admin/AddService';
  import AddOrders from './markup/pages/admin/Orders';
 import AllOrders from './markup/pages/admin/AllOrders';
+import Appointment from './markup/components/HomePageComponents/AppointmentForm';
 
 
 // Styles
@@ -49,6 +50,7 @@ function App() {
         <Route path="/admin/services" element={<AddService />} />
          <Route path="/admin/add-orders" element={<AddOrders />} />
           <Route path="/admin/orders" element={<AllOrders />} />
+          <Route path="/schedule-appointment" element={<Appointment />} />
         
 
         {/* Admin Routes (Role 3) */}

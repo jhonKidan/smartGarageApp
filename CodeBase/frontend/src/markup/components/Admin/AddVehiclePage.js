@@ -197,7 +197,7 @@ const AddVehiclePage = () => {
         {/* Add Vehicle Form */}
         {selectedCustomer ? (
           <Card>
-            <Card.Header style={{ color: '#1a2b49' }}>Add a new vehicle</Card.Header>
+            <Card.Header style={{ color: '#fff' }}>Add a new vehicle</Card.Header>
             <Card.Body>
               <Form onSubmit={handleAddVehicle}>
                 <Form.Group className="mb-3">
