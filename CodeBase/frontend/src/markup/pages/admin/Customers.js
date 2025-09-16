@@ -1,15 +1,13 @@
 import React from "react";
 // Import the auth hook 
 import { useAuth } from "../../../Contexts/AuthContext";
-// Import the login form component 
-import LoginForm from '../../components/LoginForm/LoginForm';
 // Import the admin menu component
 import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
 // Import the CustomerList component 
 import CustomersList from "../../components/Admin/CustomerList/CustomerList";
 function Customers() {
   // Destructure the auth hook 
-  const { isLogged, isAdmin, } = useAuth();
+  const { isLogged, isAdmin } = useAuth();
 
   if (isLogged) {
 
@@ -35,13 +33,7 @@ function Customers() {
         </div>
       );
     }
-  } else {
-    return (
-      <div>
-        <LoginForm />
-      </div>
-    );
-  }
+  } 
 
 }
 

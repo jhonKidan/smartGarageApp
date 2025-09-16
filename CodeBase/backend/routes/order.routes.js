@@ -24,4 +24,11 @@ router.patch(
   orderController.updateOrderStatus
 );
 
+// Assign mechanic to order (requires authentication)
+router.patch(
+  "/api/orders/:orderId/assign",
+  [authMiddleware.verifyToken],
+  orderController.assignMechanic
+);
+
 module.exports = router;

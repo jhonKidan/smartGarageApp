@@ -1,10 +1,8 @@
-// Import the employee service 
 const employeeService = require('../services/employee.service');
+
 // Create the add employee controller
 async function createEmployee(req, res, next) {
-  // Check if employee email already exists in the database 
   const employeeExists = await employeeService.checkIfEmployeeExists(req.body.employee_email);
-  // If employee exists, send a response to the client
   if (employeeExists) {
     res.status(400).json({
       error: "This email address is already associated with another employee!"
@@ -12,7 +10,6 @@ async function createEmployee(req, res, next) {
   } else {
     try {
       const employeeData = req.body;
-      // Create the employee
       const employee = await employeeService.createEmployee(employeeData);
       if (!employee) {
         res.status(400).json({
@@ -34,7 +31,6 @@ async function createEmployee(req, res, next) {
 
 // Create the getAllEmployees controller 
 async function getAllEmployees(req, res, next) {
-  // Call the getAllEmployees method from the employee service 
   const employees = await employeeService.getAllEmployees();
   if (!employees) {
     res.status(400).json({
@@ -50,7 +46,7 @@ async function getAllEmployees(req, res, next) {
 
 // Create the searchEmployees controller 
 async function searchEmployees(req, res, next) {
-  const searchTerm = req.query.q; // Get search term from query parameter 'q'
+  const searchTerm = req.query.q;
   if (!searchTerm) {
     return res.status(400).json({ error: "Search term is required" });
   }
@@ -109,11 +105,29 @@ async function deleteEmployee(req, res, next) {
   }
 }
 
-// Export the createEmployee controller 
+// Create the getMechanics controller
+async function getMechanics(req, res, next) {
+  try {
+    const employees = await employeeService.getAllEmployees();
+    const mechanics = employees.filter(emp => emp.company_role_id === 1 && emp.employee_type === "mechanic");
+    res.status(200).json({
+      status: "success",
+      data: mechanics,
+    });
+  } catch (err) {
+    console.error("Error fetching mechanics:", err);
+    res.status(500).json({
+      status: "error",
+      message: err.message || "Something went wrong!"
+    });
+  }
+}
+
 module.exports = {
   createEmployee,
   getAllEmployees,
   searchEmployees,
   updateEmployee,
-  deleteEmployee
+  deleteEmployee,
+  getMechanics
 };

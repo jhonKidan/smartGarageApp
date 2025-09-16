@@ -1,26 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 // import employee.service.js 
-import employeeService from '../../../../services/employee.service';
+import employeeService from "../../../../services/employee.service";
 // Import the useAuth hook 
 import { useAuth } from "../../../../Contexts/AuthContext";
 
 function AddEmployeeForm(props) {
-  const [employee_email, setEmail] = useState('');
-  const [employee_first_name, setFirstName] = useState('');
-  const [employee_last_name, setLastName] = useState('');
-  const [employee_phone, setPhoneNumber] = useState('');
-  const [employee_password, setPassword] = useState('');
+  const [employee_email, setEmail] = useState("");
+  const [employee_first_name, setFirstName] = useState("");
+  const [employee_last_name, setLastName] = useState("");
+  const [employee_phone, setPhoneNumber] = useState("");
+  const [employee_password, setPassword] = useState("");
   const [active_employee, setActive_employee] = useState(1);
   const [company_role_id, setCompany_role_id] = useState(1);
+  const [employee_type, setEmployee_type] = useState("receptionist"); // Default sub-role
   // Errors 
-  const [emailError, setEmailError] = useState('');
-  const [firstNameRequired, setFirstNameRequired] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState("");
+  const [firstNameRequired, setFirstNameRequired] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState("");
 
   // Create a variable to hold the user's token
-  let loggedInEmployeeToken = '';
+  let loggedInEmployeeToken = "";
   // Destructure the auth hook and get the token 
   const { employee } = useAuth();
   if (employee && employee.employee_token) {
@@ -34,32 +35,32 @@ function AddEmployeeForm(props) {
     let valid = true; // Flag 
     // First name is required 
     if (!employee_first_name) {
-      setFirstNameRequired('First name is required');
+      setFirstNameRequired("First name is required");
       valid = false;
     } else {
-      setFirstNameRequired('');
+      setFirstNameRequired("");
     }
     // Email is required
     if (!employee_email) {
-      setEmailError('Email is required');
+      setEmailError("Email is required");
       valid = false;
-    } else if (!employee_email.includes('@')) {
-      setEmailError('Invalid email format');
+    } else if (!employee_email.includes("@")) {
+      setEmailError("Invalid email format");
     } else {
       const regex = /^\S+@\S+\.\S+$/;
       if (!regex.test(employee_email)) {
-        setEmailError('Invalid email format');
+        setEmailError("Invalid email format");
         valid = false;
       } else {
-        setEmailError('');
+        setEmailError("");
       }
     }
     // Password has to be at least 6 characters long
     if (!employee_password || employee_password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
+      setPasswordError("Password must be at least 6 characters long");
       valid = false;
     } else {
-      setPasswordError('');
+      setPasswordError("");
     }
     // If the form is not valid, do not submit 
     if (!valid) {
@@ -72,7 +73,8 @@ function AddEmployeeForm(props) {
       employee_phone,
       employee_password,
       active_employee,
-      company_role_id
+      company_role_id,
+      ...(company_role_id === 1 && { employee_type }) // Add employee_type only for Employee role
     };
     // Pass the form data to the service 
     const newEmployee = employeeService.createEmployee(formData, loggedInEmployeeToken);
@@ -85,12 +87,10 @@ function AddEmployeeForm(props) {
         } else {
           // Handle successful response 
           setSuccess(true);
-          setServerError('')
+          setServerError("")
           // Redirect to the employees page after 2 seconds 
-          // For now, just redirect to the home page 
           setTimeout(() => {
-            // window.location.href = '/admin/employees';
-            window.location.href = '/admin/employees';
+            window.location.href = "/admin/employees";
           }, 2000);
         }
       })
@@ -105,7 +105,6 @@ function AddEmployeeForm(props) {
         setServerError(resMessage);
       });
   }
-
 
   return (
     <section className="contact-section">
@@ -145,6 +144,15 @@ function AddEmployeeForm(props) {
                       </select>
                     </div>
 
+                    {company_role_id === 1 && (
+                      <div className="form-group col-md-12">
+                        <select name="employee_type" value={employee_type} onChange={event => setEmployee_type(event.target.value)} className="custom-select-box">
+                          <option value="receptionist">Receptionist</option>
+                          <option value="mechanic">Mechanic</option>
+                        </select>
+                      </div>
+                    )}
+
                     <div className="form-group col-md-12">
                       <input type="password" name="employee_password" value={employee_password} onChange={event => setPassword(event.target.value)} placeholder="Employee password" />
                       {passwordError && <div className="validation-error" role="alert">{passwordError}</div>}
@@ -158,7 +166,6 @@ function AddEmployeeForm(props) {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

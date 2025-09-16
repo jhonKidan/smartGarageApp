@@ -3,17 +3,16 @@ import { Table, Button, Badge, Card, Row, Col, Form, Alert } from "react-bootstr
 import { useAuth } from "../../../Contexts/AuthContext";
 import orderService from "../../../services/order.service";
 
-const AllOrdersPage = () => {
+const AssignedOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [mechanics, setMechanics] = useState([]);
-  const [selectedMechanic, setSelectedMechanic] = useState({});
 
   const { employee } = useAuth();
   const token = employee ? employee.employee_token : null;
+  const mechanicId = employee ? employee.employee_id : null;
 
   // Status colors mapping
   const statusColors = {
@@ -22,19 +21,18 @@ const AllOrdersPage = () => {
     3: { label: "Completed", variant: "success" },
   };
 
-  // Fetch all orders with details
+  // Fetch assigned orders for the mechanic
   useEffect(() => {
-    if (token) {
-      fetchAllOrders();
-      fetchMechanics();
+    if (token && mechanicId) {
+      fetchAssignedOrders();
     }
-  }, [token]);
+  }, [token, mechanicId]);
 
-  const fetchAllOrders = async () => {
+  const fetchAssignedOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getAllOrders(token);
-      console.log("Fetched orders with status:", data); // Debug: Check all order data including status
+      const data = await orderService.getOrdersByEmployee(mechanicId);
+      console.log("Fetched assigned orders:", data); // Debug: Check order data
       if (!data || data.length === 0) {
         setOrders([]);
         setLoading(false);
@@ -45,33 +43,13 @@ const AllOrdersPage = () => {
           ...order,
           received_by: order.employee_first_name && order.employee_last_name ? `${order.employee_first_name} ${order.employee_last_name}` : "Unknown",
           order_date: new Date(order.order_date).toLocaleDateString("en-GB"),
-          assigned_mechanic: order.employee_id ? `${order.employee_first_name || "Unknown"} ${order.employee_last_name || ""}`.trim() : "Not Assigned",
         })).reverse()
       );
-      console.log("Processed orders:", orders); // Debug: Check processed orders
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching orders:", error);
-      setError("Failed to load orders. Check server logs or ensure the backend is running.");
+      console.error("Error fetching assigned orders:", error);
+      setError("Failed to load assigned orders. Check server logs or ensure the backend is running.");
       setLoading(false);
-    }
-  };
-
-  const fetchMechanics = async () => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/employees/mechanics`, {
-        headers: { "x-access-token": token },
-      });
-      const data = await response.json();
-      console.log("Fetched mechanics:", data); // Debug: Check mechanics data
-      if (data.status === "success") {
-        setMechanics(data.data.map(emp => ({ id: emp.employee_id, name: `${emp.employee_first_name} ${emp.employee_last_name}` })));
-      } else {
-        setMechanics([]);
-      }
-    } catch (error) {
-      console.error("Error fetching mechanics:", error);
-      setMechanics([]);
     }
   };
 
@@ -88,52 +66,22 @@ const AllOrdersPage = () => {
         const errorData = await response.json();
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
-      await fetchAllOrders();
+      await fetchAssignedOrders();
     } catch (error) {
       console.error("Error updating order status:", error);
       setError("Failed to update order status. Please try again.");
     }
   };
 
-  // Assign mechanic to order
-  const handleAssignMechanic = async (orderId) => {
-    try {
-      setError("");
-      const mechanicId = selectedMechanic[orderId];
-      if (!mechanicId) {
-        setError("Please select a mechanic.");
-        return;
-      }
-      console.log(`Assigning mechanic ${mechanicId} to order ${orderId}`); // Debug
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/orders/${orderId}/assign`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-access-token': token },
-        body: JSON.stringify({ employee_id: mechanicId })
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-      const result = await response.json();
-      console.log("Assignment response:", result); // Debug
-      await fetchAllOrders();
-      setSelectedMechanic((prev) => ({ ...prev, [orderId]: null }));
-    } catch (error) {
-      console.error("Error assigning mechanic:", error);
-      setError("Failed to assign mechanic. Please try again.");
-    }
-  };
-
   // Export orders to CSV
   const handleExport = () => {
-    const headers = ["Order ID, Customer, Vehicle, Order Date, Received By, Assigned Mechanic, Order Status, Services, Service Description"];
+    const headers = ["Order ID, Customer, Vehicle, Order Date, Received By, Order Status, Services, Service Description"];
     const rows = filteredOrders.map(order => [
       order.order_id,
       `${order.customer_first_name} ${order.customer_last_name} (${order.customer_email})`,
       `${order.vehicle_make} ${order.vehicle_model} (${order.vehicle_tag})`,
       order.order_date,
       order.received_by,
-      order.assigned_mechanic,
       statusColors[order.order_status].label,
       order.services.join(", "),
       order.service_description || "N/A"
@@ -144,7 +92,7 @@ const AllOrdersPage = () => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `orders_export_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `assigned_orders_export_${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -166,19 +114,11 @@ const AllOrdersPage = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleViewOrder = (orderId) => {
-    console.log("View order:", orderId);
-  };
-
-  const handleEditOrder = (orderId) => {
-    console.log("Edit order:", orderId);
-  };
-
   if (loading) {
     return (
       <div style={{ padding: "20px", textAlign: "center", backgroundColor: "#f4f7fa" }}>
-        <h2 style={{ color: "#1a2b49" }}>Orders</h2>
-        <p>Loading orders...</p>
+        <h2 style={{ color: "#1a2b49" }}>Assigned Orders</h2>
+        <p>Loading assigned orders...</p>
       </div>
     );
   }
@@ -186,7 +126,7 @@ const AllOrdersPage = () => {
   if (error) {
     return (
       <div style={{ padding: "20px", backgroundColor: "#f4f7fa" }}>
-        <h2 style={{ color: "#1a2b49" }}>Orders</h2>
+        <h2 style={{ color: "#1a2b49" }}>Assigned Orders</h2>
         <Alert variant="danger">{error}</Alert>
       </div>
     );
@@ -195,7 +135,7 @@ const AllOrdersPage = () => {
   return (
     <section style={{ padding: "20px", backgroundColor: "#f4f7fa" }}>
       <div className="container">
-        <h2 style={{ color: "#1a2b49", marginBottom: "20px" }}>Orders</h2>
+        <h2 style={{ color: "#1a2b49", marginBottom: "20px" }}>Assigned Orders</h2>
 
         {/* Filters and Search */}
         <Card className="mb-4">
@@ -227,9 +167,6 @@ const AllOrdersPage = () => {
                 </Form.Group>
               </Col>
               <Col md={5} className="text-end">
-                <Button variant="danger" className="me-2" href="/admin/add-orders">
-                  Add New Order
-                </Button>
                 <Button variant="outline-secondary" onClick={handleExport}>
                   Export
                 </Button>
@@ -244,11 +181,11 @@ const AllOrdersPage = () => {
             <div style={{ width: "40px", height: "40px", backgroundColor: "white", borderRadius: "50%", marginRight: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "#dc3545" }}>
               Orders
             </div>
-            Orders List
+            Assigned Orders List
           </Card.Header>
           <Card.Body>
             {filteredOrders.length === 0 ? (
-              <p className="text-center text-muted">No orders found matching your criteria.</p>
+              <p className="text-center text-muted">No assigned orders found matching your criteria.</p>
             ) : (
               <Table striped bordered hover responsive>
                 <thead>
@@ -258,13 +195,10 @@ const AllOrdersPage = () => {
                     <th style={{ minWidth: "150px" }}>Vehicle</th>
                     <th style={{ width: "120px" }}>Order Date</th>
                     <th style={{ width: "150px" }}>Received By</th>
-                    <th style={{ width: "150px" }}>Assigned Mechanic</th>
                     <th style={{ width: "120px" }}>Order Status</th>
                     <th style={{ width: "150px" }}>Change Status</th>
-                    <th style={{ width: "150px" }}>Assign Mechanic</th>
                     <th style={{ width: "150px" }}>Services</th>
                     <th style={{ minWidth: "200px" }}>Service Description</th>
-                    <th style={{ width: "100px" }}>View/Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -287,7 +221,6 @@ const AllOrdersPage = () => {
                         </td>
                         <td>{order.order_date}</td>
                         <td>{order.received_by}</td>
-                        <td>{order.assigned_mechanic}</td>
                         <td><Badge bg={status.variant}>{status.label}</Badge></td>
                         <td>
                           <Form.Select
@@ -301,31 +234,6 @@ const AllOrdersPage = () => {
                           </Form.Select>
                         </td>
                         <td>
-                          {order.order_status === 1 && (
-                            <>
-                              <Form.Select
-                                value={selectedMechanic[order.order_id] || ""}
-                                onChange={(e) => setSelectedMechanic((prev) => ({ ...prev, [order.order_id]: e.target.value }))}
-                                style={{ width: "150px", marginBottom: "5px" }}
-                              >
-                                <option value="">Select Mechanic</option>
-                                {mechanics.map((mechanic) => (
-                                  <option key={mechanic.id} value={mechanic.id}>{mechanic.name}</option>
-                                ))}
-                              </Form.Select>
-                              <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => handleAssignMechanic(order.order_id)}
-                                disabled={!selectedMechanic[order.order_id]}
-                              >
-                                Assign
-                              </Button>
-                            </>
-                          )}
-                          {order.order_status !== 1 && <span>N/A</span>}
-                        </td>
-                        <td>
                           <ul style={{ paddingLeft: "20px", margin: 0 }}>
                             {order.services.map((service, index) => (
                               <li key={index}>{service}</li>
@@ -333,24 +241,6 @@ const AllOrdersPage = () => {
                           </ul>
                         </td>
                         <td>{order.service_description || "N/A"}</td>
-                        <td>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 me-1 text-decoration-none"
-                            onClick={() => handleViewOrder(order.order_id)}
-                          >
-                            View
-                          </Button>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 text-decoration-none"
-                            onClick={() => handleEditOrder(order.order_id)}
-                          >
-                            Edit
-                          </Button>
-                        </td>
                       </tr>
                     );
                   })}
@@ -375,4 +265,4 @@ const AllOrdersPage = () => {
   );
 };
 
-export default AllOrdersPage;
+export default AssignedOrders;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 // Pages
@@ -8,19 +8,22 @@ import Services from "./markup/pages/services";
 import Contact from "./markup/pages/contact";
 import Login from "./markup/pages/Login";
 import AdminDashboard from "./markup/pages/admin/AdminDashboard";
-// import ManagerDashboard from "./markup/pages/admin/ManagerDashboard"; // create if needed
-// import EmployeeDashboard from "./markup/pages/admin/EmployeeDashboard"; // create if needed
-import AddEmployee from './markup/pages/admin/AddEmployee';
-import AddCustomer from './markup/pages/admin/AddCustomer';
-import Unauthorized from './markup/pages/Unauthorized';
-import Employees from './markup/pages/admin/Employees';
-import Customers from './markup/pages/admin/Customers';
-import AddVehicle from './markup/pages/admin/AddVehicle';
-import AddService from './markup/pages/admin/AddService';
- import AddOrders from './markup/pages/admin/Orders';
-import AllOrders from './markup/pages/admin/AllOrders';
-import Appointment from './markup/components/HomePageComponents/AppointmentForm';
+import ManagerDashboard from "./markup/pages/admin/AdminDashboard";
+import AddEmployee from "./markup/pages/admin/AddEmployee";
+import AddCustomer from "./markup/pages/admin/AddCustomer";
+import Unauthorized from "./markup/pages/Unauthorized";
+import Employees from "./markup/pages/admin/Employees";
+import Customers from "./markup/pages/admin/Customers";
+import AddVehicle from "./markup/pages/admin/AddVehicle";
+import AddService from "./markup/pages/admin/AddService";
+import AddOrders from "./markup/pages/admin/Orders";
+import AllOrders from "./markup/pages/admin/AllOrders";
+import Appointment from "./markup/components/HomePageComponents/AppointmentForm";
+import Receptionistboard from "./markup/pages/admin/Receptionistboard";
+import AssignedOrders from "./markup/pages/admin/AssignedOrders"; 
 
+//import receptionist menu
+import AddCustomerRec from "./markup/components/Admin/EmployeeDashboard/AddCustomerRec";
 
 // Styles
 import "./assets/template_assets/css/bootstrap.css";
@@ -30,9 +33,9 @@ import "./assets/template_assets/css/color.css";
 import "./assets/styles/custom.css";
 
 // Components
-import Header from './markup/components/Header/Header';
-import Footer from './markup/components/Footer/Footer';
-import PrivateAuthRoute from './markup/components/Auth/PrivateAuthRoute';
+import Header from "./markup/components/Header/Header";
+import Footer from "./markup/components/Footer/Footer";
+import PrivateAuthRoute from "./markup/components/Auth/PrivateAuthRoute";
 
 function App() {
   return (
@@ -48,10 +51,14 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/admin/add-vehicle" element={<AddVehicle />} />
         <Route path="/admin/services" element={<AddService />} />
-         <Route path="/admin/add-orders" element={<AddOrders />} />
-          <Route path="/admin/orders" element={<AllOrders />} />
-          <Route path="/schedule-appointment" element={<Appointment />} />
-        
+        <Route path="/admin/add-orders" element={<AddOrders />} />
+        <Route path="/admin/orders" element={<AllOrders />} />
+        <Route path="/schedule-appointment" element={<Appointment />} />
+
+      {/* receptionalist board route */}
+        <Route path="/employee/add-customer" element={<AddCustomerRec />} />
+  
+
 
         {/* Admin Routes (Role 3) */}
         <Route
@@ -70,62 +77,6 @@ function App() {
             </PrivateAuthRoute>
           }
         />
-
-        {/* Manager Routes (Role 2) */}
-        {/* <Route
-          path="/manager/dashboard"
-          element={
-            <PrivateAuthRoute roles={[2]}>
-              <ManagerDashboard />
-            </PrivateAuthRoute>
-          }
-        /> */}
-
-        {/* Employee Routes (Role 1) */}
-        {/* <Route
-          path="/employee/dashboard"
-          element={
-            <PrivateAuthRoute roles={[1]}>
-              <EmployeeDashboard />
-            </PrivateAuthRoute>
-          }
-        /> */}
-
-        {/* Shared Routes (Admin + Manager) */}
-        <Route
-          path="/admin/customers"
-          element={
-            <PrivateAuthRoute roles={[2, 3]}>
-              <Customers />
-            </PrivateAuthRoute>
-          }
-        />
-        <Route
-          path="/admin/add-customer"
-          element={
-            <PrivateAuthRoute roles={[2, 3]}>
-              <AddCustomer />
-            </PrivateAuthRoute>
-          }
-        />
-
-        {/* Shared Routes (Admin + Manager) */}
-        {/* <Route
-
-
-          path="/admin/orders"
-          element={
-            <PrivateAuthRoute roles={[2, 3]}>
-              <Orders />
-            </PrivateAuthRoute>
-          }
-        /> */}
-
-        
-        
-        
-
-        {/* Employees (Admin only) */}
         <Route
           path="/admin/employees"
           element={
@@ -134,6 +85,53 @@ function App() {
             </PrivateAuthRoute>
           }
         />
+
+        {/* Manager Routes (Role 2) */}
+        <Route
+          path="/manager/dashboard"
+          element={
+            <PrivateAuthRoute roles={[2]}>
+              <ManagerDashboard />
+            </PrivateAuthRoute>
+          }
+        />
+        <Route
+          path="/admin/customers"
+          element={
+            <PrivateAuthRoute roles={[1,2, 3]}>
+              <Customers />
+            </PrivateAuthRoute>
+          }
+        />
+        <Route
+          path="/admin/add-customer"
+          element={
+            <PrivateAuthRoute roles={[1,2, 3]}>
+              <AddCustomer />
+            </PrivateAuthRoute>
+          }
+        />
+
+        
+
+       <Route
+          path="/employee/receptionist-dashboard"
+          element={
+            <PrivateAuthRoute roles={[1]}>
+              <Receptionistboard />
+            </PrivateAuthRoute>
+          }
+        />
+
+         <Route
+          path="/employee/assigned-orders"
+          element={
+            <PrivateAuthRoute roles={[1]}>
+              <AssignedOrders />
+            </PrivateAuthRoute>
+          }
+        />
+
       </Routes>
       <Footer />
     </>

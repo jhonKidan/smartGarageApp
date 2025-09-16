@@ -1,8 +1,7 @@
 // Import the dotenv package
-require('dotenv').config();
+require("dotenv").config();
 // Import the jsonwebtoken package
 const jwt = require("jsonwebtoken");
-// A function to verify the token received from the frontend 
 // Import the employee service 
 const employeeService = require("../services/employee.service");
 

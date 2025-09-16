@@ -1,5 +1,5 @@
 // Import the login service 
-const loginService = require('../services/login.service');
+const loginService = require("../services/login.service");
 // Import the jsonwebtoken module
 const jwt = require("jsonwebtoken");
 // Import the secret key from the environment variables
@@ -18,7 +18,6 @@ async function logIn(req, res, next) {
         status: employee.status,
         message: employee.message,
       });
-      // console.log(employee.message);
     }
     // If successful, send a response to the client
     const payload = {
@@ -26,11 +25,11 @@ async function logIn(req, res, next) {
       employee_email: employee.data.employee_email,
       employee_role: employee.data.company_role_id,
       employee_first_name: employee.data.employee_first_name,
+      employee_type: employee.data.employee_type || null, // Include sub-role
     };
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: "24h",
     });
-    // console.log(token);
     const sendBack = {
       employee_token: token,
     };
@@ -40,7 +39,11 @@ async function logIn(req, res, next) {
       data: sendBack,
     });
   } catch (error) {
-
+    console.error("Error in login:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong!",
+    });
   }
 }
 

@@ -24,8 +24,8 @@ async function createEmployee(employee) {
       return false;
     }
     const employee_id = rows.insertId;
-    const query2 = "INSERT INTO employee_info (employee_id, employee_first_name, employee_last_name, employee_phone) VALUES (?, ?, ?, ?)";
-    const rows2 = await conn.query(query2, [employee_id, employee.employee_first_name, employee.employee_last_name, employee.employee_phone]);
+    const query2 = "INSERT INTO employee_info (employee_id, employee_first_name, employee_last_name, employee_phone, employee_type) VALUES (?, ?, ?, ?, ?)";
+    const rows2 = await conn.query(query2, [employee_id, employee.employee_first_name, employee.employee_last_name, employee.employee_phone, employee.employee_type || null]);
     const query3 = "INSERT INTO employee_pass (employee_id, employee_password_hashed) VALUES (?, ?)";
     const rows3 = await conn.query(query3, [employee_id, hashedPassword]);
     const query4 = "INSERT INTO employee_role (employee_id, company_role_id) VALUES (?, ?)";
@@ -39,6 +39,19 @@ async function createEmployee(employee) {
   return createdEmployee;
 }
 
+// A function to get employee by ID
+async function getEmployeeById(employeeId) {
+  const query = `
+    SELECT e.employee_id, e.employee_email, ei.employee_first_name, ei.employee_last_name, ei.employee_phone, ei.employee_type, er.company_role_id
+    FROM employee e
+    INNER JOIN employee_info ei ON e.employee_id = ei.employee_id
+    INNER JOIN employee_role er ON e.employee_id = er.employee_id
+    WHERE e.employee_id = ?
+  `;
+  const [rows] = await conn.query(query, [employeeId]);
+  return rows[0] || null;
+}
+
 // A function to get employee by email
 async function getEmployeeByEmail(employee_email) {
   const query = "SELECT * FROM employee INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id INNER JOIN employee_pass ON employee.employee_id = employee_pass.employee_id INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id WHERE employee.employee_email = ?";
@@ -46,24 +59,40 @@ async function getEmployeeByEmail(employee_email) {
   return rows;
 }
 
-// A function to get all employees
-async function getAllEmployees() {
-  const query = "SELECT * FROM employee INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id INNER JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id ORDER BY employee.employee_id DESC LIMIT 10";
-  const rows = await conn.query(query);
+// A function to get all employees with optional mechanic filtering
+async function getAllEmployees(queryParams = {}) {
+  let query = `
+    SELECT e.*, ei.employee_first_name, ei.employee_last_name, ei.employee_phone, ei.employee_type, er.company_role_id, cr.company_role_name
+    FROM employee e
+    INNER JOIN employee_info ei ON e.employee_id = ei.employee_id
+    INNER JOIN employee_role er ON e.employee_id = er.employee_id
+    INNER JOIN company_roles cr ON er.company_role_id = cr.company_role_id
+    WHERE 1=1
+  `;
+  const params = [];
+
+  if (queryParams.role && queryParams.type) {
+    query += " AND er.company_role_id = ? AND ei.employee_type = ?";
+    params.push(parseInt(queryParams.role), queryParams.type);
+  }
+
+  query += " ORDER BY e.employee_id DESC LIMIT 10";
+  const rows = await conn.query(query, params);
   return rows;
 }
 
 // A function to search employees by first name, last name, or phone
 async function searchEmployees(searchTerm) {
   const query = `
-    SELECT * FROM employee 
-    INNER JOIN employee_info ON employee.employee_id = employee_info.employee_id 
-    INNER JOIN employee_role ON employee.employee_id = employee_role.employee_id 
-    INNER JOIN company_roles ON employee_role.company_role_id = company_roles.company_role_id 
-    WHERE employee_info.employee_first_name LIKE ? 
-    OR employee_info.employee_last_name LIKE ? 
-    OR employee_info.employee_phone LIKE ? 
-    ORDER BY employee.employee_id DESC LIMIT 10
+    SELECT e.*, ei.employee_first_name, ei.employee_last_name, ei.employee_phone, ei.employee_type, er.company_role_id, cr.company_role_name
+    FROM employee e
+    INNER JOIN employee_info ei ON e.employee_id = ei.employee_id
+    INNER JOIN employee_role er ON e.employee_id = er.employee_id
+    INNER JOIN company_roles cr ON er.company_role_id = cr.company_role_id
+    WHERE ei.employee_first_name LIKE ? 
+    OR ei.employee_last_name LIKE ? 
+    OR ei.employee_phone LIKE ? 
+    ORDER BY e.employee_id DESC LIMIT 10
   `;
   const searchPattern = `%${searchTerm}%`;
   const rows = await conn.query(query, [searchPattern, searchPattern, searchPattern]);
@@ -93,7 +122,6 @@ async function updateEmployee(id, employeeData) {
 // A function to delete an employee
 async function deleteEmployee(id) {
   try {
-    // Delete from related tables first
     const query1 = "DELETE FROM employee_role WHERE employee_id = ?";
     const rows1 = await conn.query(query1, [id]);
     const query2 = "DELETE FROM employee_pass WHERE employee_id = ?";
@@ -109,10 +137,10 @@ async function deleteEmployee(id) {
   }
 }
 
-// Export the functions for use in the controller
 module.exports = {
   checkIfEmployeeExists,
   createEmployee,
+  getEmployeeById,
   getEmployeeByEmail,
   getAllEmployees,
   searchEmployees,

@@ -23,7 +23,6 @@ async function createOrder(req, res, next) {
       });
     }
 
-    // Generate order hash
     const salt = await bcrypt.genSalt(10);
     const orderHash = await bcrypt.hash(`${customer_id}-${vehicle_id}-${Date.now()}`, salt);
 
@@ -35,7 +34,7 @@ async function createOrder(req, res, next) {
       selected_services: selected_services.map(id => parseInt(id)),
       additional_request: additional_request || '',
       total_price: parseInt(total_price) || 0,
-      estimated_completion_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Default +7 days
+      estimated_completion_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     };
 
     console.log('Processed Order Data:', orderData);
@@ -113,8 +112,43 @@ async function updateOrderStatus(req, res, next) {
   }
 }
 
+// Controller: Assign Mechanic to Order
+async function assignMechanic(req, res, next) {
+  try {
+    const { orderId } = req.params;
+    const { employee_id } = req.body;
+
+    if (!orderId || !employee_id) {
+      return res.status(400).json({
+        status: "error",
+        message: "Valid orderId and employee_id are required",
+      });
+    }
+
+    const updated = await orderService.assignMechanic(parseInt(orderId), parseInt(employee_id));
+    if (!updated) {
+      return res.status(404).json({
+        status: "error",
+        message: "Order not found or assignment failed",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Mechanic assigned successfully",
+    });
+  } catch (err) {
+    console.error("Error in assignMechanic:", err);
+    res.status(500).json({
+      status: "error",
+      message: err.message || "Something went wrong!"
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
   updateOrderStatus,
+  assignMechanic,
 };

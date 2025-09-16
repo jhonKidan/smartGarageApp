@@ -1,10 +1,6 @@
-// Import the express module  
 const express = require('express');
-// Call the router method from express to create the router 
 const router = express.Router();
-// Import the employee controller
 const employeeController = require('../controllers/employee.controller');
-// Import middleware 
 const authMiddleware = require("../middlewares/auth.middleware");
 
 // Create a route to handle the add employee request on post
@@ -17,5 +13,7 @@ router.get("/api/employees/search", [authMiddleware.verifyToken, authMiddleware.
 router.put("/api/employee/:id", [authMiddleware.verifyToken, authMiddleware.isAdmin], employeeController.updateEmployee);
 // Create a route to handle the delete employee request on delete
 router.delete("/api/employee/:id", [authMiddleware.verifyToken, authMiddleware.isAdmin], employeeController.deleteEmployee);
-// Export the router
+// Create a route to handle the get mechanics request on get
+router.get("/api/employees/mechanics", [authMiddleware.verifyToken, authMiddleware.isAdmin], employeeController.getMechanics);
+
 module.exports = router;
