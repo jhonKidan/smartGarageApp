@@ -1,40 +1,47 @@
 import React from "react";
-// Import the auth hook 
 import { useAuth } from "../../../Contexts/AuthContext";
-// Import the admin menu component
 import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
-// Import the CustomerList component 
 import CustomersList from "../../components/Admin/CustomerList/CustomerList";
+
 function Customers() {
-  // Destructure the auth hook 
-  const { isLogged, isAdmin } = useAuth();
+  const { isLogged, employee } = useAuth();
 
-  if (isLogged) {
+  // Check if user is logged in and has the required role/type
+  const hasAccess = isLogged && (
+    employee?.employee_role === 3 || // Admin
+    (employee?.employee_role === 1 && employee?.employee_type === "receptionist") // Receptionist
+  );
 
-    if (isAdmin) {
-      return (
-        <div>
-          <div className="container-fluid admin-pages">
-            <div className="row">
-              <div className="col-md-3 admin-left-side">
-                <AdminMenu />
-              </div>
-              <div className="col-md-9 admin-right-side">
-                <CustomersList />
-              </div>
-            </div>
+  if (!isLogged) {
+    return (
+      <div>
+        <h1>Please log in to access this page</h1>
+      </div>
+    );
+  }
+
+  if (!hasAccess) {
+    return (
+      <div>
+        <h1>You are not authorized to access this page</h1>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="container-fluid admin-pages">
+        <div className="row">
+          <div className="col-md-3 admin-left-side">
+            <AdminMenu />
+          </div>
+          <div className="col-md-9 admin-right-side">
+            <CustomersList />
           </div>
         </div>
-      );
-    } else {
-      return (
-        <div>
-          <h1>You are not authorized to access this page</h1>
-        </div>
-      );
-    }
-  } 
-
+      </div>
+    </div>
+  );
 }
 
-export default Customers; 
+export default Customers;

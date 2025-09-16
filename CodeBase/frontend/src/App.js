@@ -25,6 +25,7 @@ import AssignedOrders from "./markup/pages/admin/AssignedOrders";
 //import receptionist menu
 import AddCustomerRec from "./markup/components/Admin/EmployeeDashboard/AddCustomerRec";
 import AppointmentList from "./markup/components/Admin/EmployeeDashboard/AppointmentList";
+import CustomerListRec from "./markup/components/Admin/EmployeeDashboard/CustomerListRec";
 
 // Styles
 import "./assets/template_assets/css/bootstrap.css";
@@ -59,6 +60,7 @@ function App() {
       {/* receptionalist board route */}
         <Route path="/employee/add-customer" element={<AddCustomerRec />} />
         <Route path="/employee/appointments" element={<AppointmentList />} />
+        <Route path="/employee/customers" element={<CustomerListRec />} />
   
 
 

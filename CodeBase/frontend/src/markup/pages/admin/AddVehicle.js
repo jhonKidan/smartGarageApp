@@ -1,48 +1,16 @@
 import React from "react";
-// Import the auth hook 
 import { useAuth } from "../../../Contexts/AuthContext";
-// Import the login form component 
 import LoginForm from '../../components/LoginForm/LoginForm';
-// Import the admin menu component
 import AdminMenu from "../../components/Admin/AdminMenu/AdminMenu";
-//import add vehicles page
 import AddVehiclePage from "../../components/Admin/AddVehiclePage";
 
-
-
-
-
 function AddVehicle() {
-  // Destructure the auth hook 
-  const { isLogged, isAdmin, } = useAuth();
+  const { isLogged, hasRoleAccess } = useAuth();
 
-  if (isLogged) {
+  // Check if user has access (Admin: role 3, Receptionist: role 1 + type "receptionist")
+  const hasAccess = hasRoleAccess([3, { role: 1, type: "receptionist" }]);
 
-    if (isAdmin) {
-      return (
-        <div>
-          <div className="container-fluid admin-pages">
-            <div className="row">
-              <div className="col-md-3 admin-left-side">
-                <AdminMenu />
-              </div>
-              <div className="col-md-9 admin-right-side">
-               
-                <AddVehiclePage />
-               
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <h1>You are not authorized to access this page</h1>
-        </div>
-      );
-    }
-  } else {
+  if (!isLogged) {
     return (
       <div>
         <LoginForm />
@@ -50,6 +18,28 @@ function AddVehicle() {
     );
   }
 
+  if (!hasAccess) {
+    return (
+      <div>
+        <h1>You are not authorized to access this page</h1>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="container-fluid admin-pages">
+        <div className="row">
+          <div className="col-md-3 admin-left-side">
+            <AdminMenu />
+          </div>
+          <div className="col-md-9 admin-right-side">
+            <AddVehiclePage />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default AddVehicle; 
+export default AddVehicle;

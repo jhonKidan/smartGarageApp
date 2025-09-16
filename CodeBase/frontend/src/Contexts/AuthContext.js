@@ -18,16 +18,28 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Retrieve the logged-in user from local storage
     const loggedInEmployee = getAuth();
-    loggedInEmployee.then((response) => {
-      if (response.employee_token) {
-        setIsLogged(true);
-        setEmployee(response);
-        // Set admin status based on role (3 for Admin)
-        if (response.employee_role === 3) {
-          setIsAdmin(true);
+    loggedInEmployee
+      .then((response) => {
+        if (response && response.employee_token) {
+          setIsLogged(true);
+          setEmployee(response);
+          // Set admin status based on role (3 for Admin)
+          if (response.employee_role === 3) {
+            setIsAdmin(true);
+          }
+          console.log("Auth restored from localStorage:", { role: response.employee_role, type: response.employee_type }); // Debug log
+        } else {
+          setIsLogged(false);
+          setEmployee(null);
+          setIsAdmin(false);
         }
-      }
-    });
+      })
+      .catch((error) => {
+        console.error("Error restoring auth from localStorage:", error);
+        setIsLogged(false);
+        setEmployee(null);
+        setIsAdmin(false);
+      });
   }, []);
 
   const login = async (credentials) => {
@@ -52,6 +64,11 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem("employee", JSON.stringify(employeeData));
           setIsLogged(true);
           setEmployee(employeeData);
+          // Set admin status
+          if (employeeData.employee_role === 3) {
+            setIsAdmin(true);
+          }
+          console.log("Login successful:", { role: employeeData.employee_role, type: employeeData.employee_type }); // Debug log
           // Redirect based on role and sub-role
           switch (employeeData.employee_role) {
             case 3: // Admin
@@ -90,7 +107,27 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
-  const value = { isLogged, isAdmin, employee, login, logout };
+  // Helper function to check role-based access (e.g., for components like Customers.js)
+  const hasRoleAccess = (allowedRoles) => {
+    if (!employee) return false;
+    return allowedRoles.some((role) => {
+      if (typeof role === "number") {
+        return employee.employee_role === role;
+      } else if (role.role && role.type) {
+        return employee.employee_role === role.role && employee.employee_type === role.type;
+      }
+      return false;
+    });
+  };
+
+  const value = { 
+    isLogged, 
+    isAdmin, 
+    employee, 
+    login, 
+    logout,
+    hasRoleAccess // New: Reusable role check
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
