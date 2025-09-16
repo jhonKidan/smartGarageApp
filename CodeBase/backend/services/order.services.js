@@ -263,10 +263,27 @@ async function getOrdersByEmployee(employeeId) {
   }
 }
 
+// Delete an order
+async function deleteOrder(orderId) {
+  try {
+    // Delete related records in dependent tables first (due to foreign key constraints)
+    await conn.query("DELETE FROM order_services WHERE order_id = ?", [orderId]);
+    await conn.query("DELETE FROM order_info WHERE order_id = ?", [orderId]);
+    await conn.query("DELETE FROM order_status WHERE order_id = ?", [orderId]);
+    // Delete the order from orders table
+    const result = await conn.query("DELETE FROM orders WHERE order_id = ?", [orderId]);
+    return result.affectedRows > 0;
+  } catch (err) {
+    console.error("Service Error deleting order:", err.message, err.stack);
+    throw err;
+  }
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
   updateOrderStatus,
   assignMechanic,
   getOrdersByEmployee,
+  deleteOrder,
 };

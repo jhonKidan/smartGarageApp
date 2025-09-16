@@ -17,10 +17,10 @@ router.get(
   orderController.getAllOrders
 );
 
-// Update order status (restricted to admins)
+// Update order status (restricted to admins and mechanics)
 router.patch(
   "/api/orders/:orderId/status",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrMechanic],
   orderController.updateOrderStatus
 );
 
@@ -29,6 +29,13 @@ router.patch(
   "/api/orders/:orderId/assign",
   [authMiddleware.verifyToken, authMiddleware.isAdmin],
   orderController.assignMechanic
+);
+
+// Delete order (restricted to admins)
+router.delete(
+  "/api/orders/:orderId",
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  orderController.deleteOrder
 );
 
 // Get orders by employee (accessible to all authenticated employees)

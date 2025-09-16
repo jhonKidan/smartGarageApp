@@ -34,9 +34,9 @@ const AssignedOrders = () => {
   const fetchAssignedOrders = async () => {
     try {
       setLoading(true);
-      console.log("Fetching orders for mechanicId:", mechanicId, "with token:", token); // Debug
-      const data = await orderService.getOrdersByEmployee(token, mechanicId); // Pass token
-      console.log("Fetched assigned orders:", data); // Debug
+      console.log("Fetching orders for mechanicId:", mechanicId, "with token:", token);
+      const data = await orderService.getOrdersByEmployee(token, mechanicId);
+      console.log("Fetched assigned orders:", data);
       if (!data || data.length === 0) {
         setOrders([]);
         setLoading(false);
@@ -51,7 +51,7 @@ const AssignedOrders = () => {
       );
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching assigned orders:", error.message, error.stack); // Enhanced logging
+      console.error("Error fetching assigned orders:", error.message, error.stack);
       setError(`Failed to load assigned orders: ${error.message}. Check server logs or ensure the backend is running.`);
       setLoading(false);
     }
@@ -61,25 +61,27 @@ const AssignedOrders = () => {
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       setError("");
+      console.log(`Updating order ${orderId} to status ${newStatus} (${statusColors[newStatus].label})`);
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/orders/${orderId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'x-access-token': token },
         body: JSON.stringify({ order_status: newStatus })
       });
+      const responseData = await response.json();
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(`${responseData.message || responseData.error || 'Unknown error'} (HTTP ${response.status})`);
       }
+      console.log(`Order ${orderId} status updated successfully:`, responseData);
       await fetchAssignedOrders();
     } catch (error) {
-      console.error("Error updating order status:", error);
-      setError("Failed to update order status. Please try again.");
+      console.error("Error updating order status:", error.message, error.stack);
+      setError(`Failed to update order status: ${error.message}. Please try again.`);
     }
   };
 
   // Export orders to CSV
   const handleExport = () => {
-    const headers = ["Order ID, Customer, Vehicle, Order Date, Received By, Order Status, Services, Service Description"];
+    const headers = ["Order ID,Customer,Vehicle,Order Date,Received By,Order Status,Services,Service Description"];
     const rows = filteredOrders.map(order => [
       order.order_id,
       `${order.customer_first_name} ${order.customer_last_name} (${order.customer_email})`,
@@ -89,7 +91,7 @@ const AssignedOrders = () => {
       statusColors[order.order_status].label,
       order.services.join(", "),
       order.service_description || "N/A"
-    ].join(", "));
+    ].join(","));
 
     const csvContent = [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -207,7 +209,7 @@ const AssignedOrders = () => {
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => {
-                    console.log(`Order ${order.order_id} status: ${order.order_status}`); // Debug
+                    console.log(`Order ${order.order_id} status: ${order.order_status}`);
                     const status = statusColors[order.order_status];
                     const customerFullName = `${order.customer_first_name} ${order.customer_last_name}`;
                     const vehicleDisplay = `${order.vehicle_make} ${order.vehicle_model} (${order.vehicle_tag})`;

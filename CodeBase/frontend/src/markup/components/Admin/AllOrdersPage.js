@@ -14,6 +14,7 @@ const AllOrdersPage = () => {
 
   const { employee } = useAuth();
   const token = employee ? employee.employee_token : null;
+  const isAdmin = employee && employee.employee_role === 3;
 
   // Status colors mapping
   const statusColors = {
@@ -24,17 +25,19 @@ const AllOrdersPage = () => {
 
   // Fetch all orders with details
   useEffect(() => {
-    if (token) {
+    if (token && isAdmin) {
       fetchAllOrders();
       fetchMechanics();
+    } else {
+      setLoading(false); // Stop loading if not admin
     }
-  }, [token]);
+  }, [token, isAdmin]);
 
   const fetchAllOrders = async () => {
     try {
       setLoading(true);
       const data = await orderService.getAllOrders(token);
-      console.log("Fetched orders with status:", data); // Debug: Check all order data including status
+      console.log("Fetched orders with status:", data); // Debug: Check all order data
       if (!data || data.length === 0) {
         setOrders([]);
         setLoading(false);
@@ -43,9 +46,10 @@ const AllOrdersPage = () => {
       setOrders(
         data.map((order) => ({
           ...order,
-          received_by: order.employee_first_name && order.employee_last_name ? `${order.employee_first_name} ${order.employee_last_name}` : "Unknown",
           order_date: new Date(order.order_date).toLocaleDateString("en-GB"),
-          assigned_mechanic: order.employee_id ? `${order.employee_first_name || "Unknown"} ${order.employee_last_name || ""}`.trim() : "Not Assigned",
+          assigned_mechanic: order.employee_id && order.employee_first_name && order.employee_last_name
+            ? `${order.employee_first_name} ${order.employee_last_name}`.trim()
+            : "N/A",
         })).reverse()
       );
       console.log("Processed orders:", orders); // Debug: Check processed orders
@@ -72,26 +76,6 @@ const AllOrdersPage = () => {
     } catch (error) {
       console.error("Error fetching mechanics:", error);
       setMechanics([]);
-    }
-  };
-
-  // Update order status
-  const handleStatusUpdate = async (orderId, newStatus) => {
-    try {
-      setError("");
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/orders/${orderId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-access-token': token },
-        body: JSON.stringify({ order_status: newStatus })
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-      await fetchAllOrders();
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      setError("Failed to update order status. Please try again.");
     }
   };
 
@@ -124,22 +108,41 @@ const AllOrdersPage = () => {
     }
   };
 
+  // Delete order
+  const handleDeleteOrder = async (orderId) => {
+    try {
+      setError("");
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/orders/${orderId}`, {
+        method: 'DELETE',
+        headers: { 'x-access-token': token },
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      console.log(`Deleted order ${orderId}`); // Debug
+      await fetchAllOrders(); // Refresh orders list
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      setError("Failed to delete order. Please try again.");
+    }
+  };
+
   // Export orders to CSV
   const handleExport = () => {
-    const headers = ["Order ID, Customer, Vehicle, Order Date, Received By, Assigned Mechanic, Order Status, Services, Service Description"];
+    const headers = ["Order ID,Customer,Vehicle,Order Date,Assigned Mechanic,Order Status,Services,Service Description"];
     const rows = filteredOrders.map(order => [
       order.order_id,
       `${order.customer_first_name} ${order.customer_last_name} (${order.customer_email})`,
       `${order.vehicle_make} ${order.vehicle_model} (${order.vehicle_tag})`,
       order.order_date,
-      order.received_by,
       order.assigned_mechanic,
       statusColors[order.order_status].label,
       order.services.join(", "),
       order.service_description || "N/A"
-    ].join(", "));
+    ].join(","));
 
-    const csvContent = [headers.join(","), ...rows].join("\n");
+    const csvContent = [headers, ...rows].join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -166,13 +169,14 @@ const AllOrdersPage = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleViewOrder = (orderId) => {
-    console.log("View order:", orderId);
-  };
-
-  const handleEditOrder = (orderId) => {
-    console.log("Edit order:", orderId);
-  };
+  if (!isAdmin) {
+    return (
+      <div style={{ padding: "20px", backgroundColor: "#f4f7fa" }}>
+        <h2 style={{ color: "#1a2b49" }}>Orders</h2>
+        <Alert variant="danger">You are not authorized to access this page.</Alert>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -257,19 +261,17 @@ const AllOrdersPage = () => {
                     <th style={{ minWidth: "200px" }}>Customer</th>
                     <th style={{ minWidth: "150px" }}>Vehicle</th>
                     <th style={{ width: "120px" }}>Order Date</th>
-                    <th style={{ width: "150px" }}>Received By</th>
                     <th style={{ width: "150px" }}>Assigned Mechanic</th>
                     <th style={{ width: "120px" }}>Order Status</th>
-                    <th style={{ width: "150px" }}>Change Status</th>
                     <th style={{ width: "150px" }}>Assign Mechanic</th>
                     <th style={{ width: "150px" }}>Services</th>
                     <th style={{ minWidth: "200px" }}>Service Description</th>
-                    <th style={{ width: "100px" }}>View/Edit</th>
+                    <th style={{ width: "100px" }}>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => {
-                    console.log(`Order ${order.order_id} status: ${order.order_status}`); // Debug: Log each order's status
+                    console.log(`Order ${order.order_id} status: ${order.order_status}, assigned_mechanic: ${order.assigned_mechanic}`); // Debug
                     const status = statusColors[order.order_status];
                     const customerFullName = `${order.customer_first_name} ${order.customer_last_name}`;
                     const vehicleDisplay = `${order.vehicle_make} ${order.vehicle_model} (${order.vehicle_tag})`;
@@ -286,22 +288,10 @@ const AllOrdersPage = () => {
                           <small className="text-muted">{order.vehicle_tag}</small>
                         </td>
                         <td>{order.order_date}</td>
-                        <td>{order.received_by}</td>
                         <td>{order.assigned_mechanic}</td>
                         <td><Badge bg={status.variant}>{status.label}</Badge></td>
                         <td>
-                          <Form.Select
-                            value={order.order_status}
-                            onChange={(e) => handleStatusUpdate(order.order_id, parseInt(e.target.value))}
-                            style={{ width: "120px" }}
-                          >
-                            <option value="1">Received</option>
-                            <option value="2">In Progress</option>
-                            <option value="3">Completed</option>
-                          </Form.Select>
-                        </td>
-                        <td>
-                          {order.order_status === 1 && (
+                          {order.order_status === 1 ? (
                             <>
                               <Form.Select
                                 value={selectedMechanic[order.order_id] || ""}
@@ -322,8 +312,9 @@ const AllOrdersPage = () => {
                                 Assign
                               </Button>
                             </>
+                          ) : (
+                            <span>Assigned</span>
                           )}
-                          {order.order_status !== 1 && <span>N/A</span>}
                         </td>
                         <td>
                           <ul style={{ paddingLeft: "20px", margin: 0 }}>
@@ -335,20 +326,11 @@ const AllOrdersPage = () => {
                         <td>{order.service_description || "N/A"}</td>
                         <td>
                           <Button
-                            variant="link"
+                            variant="danger"
                             size="sm"
-                            className="p-0 me-1 text-decoration-none"
-                            onClick={() => handleViewOrder(order.order_id)}
+                            onClick={() => handleDeleteOrder(order.order_id)}
                           >
-                            View
-                          </Button>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 text-decoration-none"
-                            onClick={() => handleEditOrder(order.order_id)}
-                          >
-                            Edit
+                            Delete
                           </Button>
                         </td>
                       </tr>

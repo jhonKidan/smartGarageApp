@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Alert, Card, Table, ListGroup, Row, Col, useNavigate } from 'react-bootstrap';
+import { Form, Button, Alert, Card, Table, ListGroup, Row, Col } from 'react-bootstrap';
 import { useAuth } from "../../../Contexts/AuthContext";
-import { useNavigate as useReactNavigate } from 'react-router-dom'; // Import useNavigate from 
+import { useNavigate } from 'react-router-dom';
 import '../../../../src/assets/styles/custom.css';
-// react-router-dom
 import customerService from "../../../services/customer.service";
 import vehicleService from "../../../services/vehicle.service";
 import orderService from "../../../services/order.service";
@@ -35,7 +34,7 @@ const CustomerSearchBar = ({ onSearch, placeholder = "Search customers..." }) =>
 };
 
 const CreateOrderPage = () => {
-  const navigate = useReactNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [vehicles, setVehicles] = useState([]);
@@ -224,8 +223,11 @@ const CreateOrderPage = () => {
         setAdditionalRequest('');
         setAdditionalPrice('');
         setTotalPrice(0);
-        setAlert({ show: true, message: 'Order submitted successfully!', variant: 'success' });
-        navigate('/admin/orders'); // Navigate to All Orders page
+        setAlert({ 
+          show: true, 
+          message: 'Order created successfully! You can create another order or return to the orders list.', 
+          variant: 'success' 
+        });
       } else {
         throw new Error('Unexpected response from server');
       }
@@ -237,33 +239,65 @@ const CreateOrderPage = () => {
     }
   };
 
-  // Hide alert
-  useEffect(() => {
-    if (alert.show) {
-      const timer = setTimeout(() => setAlert({ ...alert, show: false }), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [alert]);
+  // Handle alert dismissal
+  const handleDismissAlert = () => {
+    setAlert({ ...alert, show: false });
+  };
 
   return (
     <section className="create-order-section" style={{ padding: '20px', backgroundColor: '#f4f7fa' }}>
       <div className="container">
         <h2 style={{ color: '#1a2b49', marginBottom: '20px' }}>Create a new order</h2>
 
+        {/* Alert for success/error messages */}
+        {alert.show && (
+          <Alert 
+            variant={alert.variant} 
+            className="mt-3" 
+            dismissible 
+            onClose={handleDismissAlert}
+            style={{ fontWeight: 'bold', fontSize: '1.1rem' }}
+          >
+            {alert.message}
+            {alert.variant === 'success' && (
+              <div className="mt-2">
+                <Button 
+                  variant="outline-primary" 
+                  size="sm" 
+                  onClick={() => navigate('/admin/orders')}
+                  className="me-2"
+                >
+                  View Orders List
+                </Button>
+                <Button 
+                  variant="outline-secondary" 
+                  size="sm" 
+                  onClick={handleDismissAlert}
+                >
+                  Create Another Order
+                </Button>
+              </div>
+            )}
+          </Alert>
+        )}
+
         {/* Step 1: Search Customer */}
         <Card className="mb-4">
           <Card.Body>
             <Row>
               <Col md={8}>
-                <CustomerSearchBar onSearch={handleCustomerSearch} placeholder="Search for a customer using first name, last name, email address or phone number" />
+                <CustomerSearchBar 
+                  onSearch={handleCustomerSearch} 
+                  placeholder="Search for a customer using first name, last name, email address or phone number" 
+                />
               </Col>
               <Col md={4}>
                 <Button 
-                   variant="danger" 
-                      onClick={() => navigate("/admin/add-customer")}
-                         >
-                           ADD NEW CUSTOMER
-                     </Button>
+                  variant="danger" 
+                  onClick={() => navigate("/admin/add-customer")}
+                >
+                  ADD NEW CUSTOMER
+                </Button>
               </Col>
             </Row>
             {loading && <p>Loading...</p>}
@@ -286,7 +320,11 @@ const CreateOrderPage = () => {
                       <td>{customer.customer_email}</td>
                       <td>{customer.customer_phone_number}</td>
                       <td>
-                        <Button variant="outline-primary" size="sm" onClick={() => handleSelectCustomer(customer)}>
+                        <Button 
+                          variant="outline-primary" 
+                          size="sm" 
+                          onClick={() => handleSelectCustomer(customer)}
+                        >
                           Select
                         </Button>
                       </td>
@@ -473,7 +511,11 @@ const CreateOrderPage = () => {
                         <td>{vehicle.vehicle_color}</td>
                         <td>{vehicle.vehicle_mileage}</td>
                         <td>
-                          <Button variant="outline-primary" size="sm" onClick={() => handleSelectVehicle(vehicle)}>
+                          <Button 
+                            variant="outline-primary" 
+                            size="sm" 
+                            onClick={() => handleSelectVehicle(vehicle)}
+                          >
                             Choose
                           </Button>
                         </td>
@@ -546,10 +588,13 @@ const CreateOrderPage = () => {
               </Card.Body>
             </Card>
 
-            <Button variant="danger" type="submit" disabled={loading || selectedServices.length === 0}>
+            <Button 
+              variant="danger" 
+              type="submit" 
+              disabled={loading || selectedServices.length === 0}
+            >
               {loading ? 'Submitting...' : 'SUBMIT ORDER'}
             </Button>
-            {alert.show && <Alert variant={alert.variant} className="mt-3">{alert.message}</Alert>}
           </Form>
         )}
       </div>
