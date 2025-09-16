@@ -13,6 +13,7 @@ function Receptionistboard(props) {
         <a href="/employee/customers" className="list-group-item">Customers List</a>
          <a href="/employee/add-vehicle" className="list-group-item">Add vehicle</a>
         <a href="/employee/add-orders" className="list-group-item">Add order</a>
+        <a href="/employee/order-status" className="list-group-item">Order List</a>
       </div>
     </div>
   );
