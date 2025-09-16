@@ -25,14 +25,18 @@ const AssignedOrders = () => {
   useEffect(() => {
     if (token && mechanicId) {
       fetchAssignedOrders();
+    } else {
+      setError("Invalid authentication data. Please log in again.");
+      setLoading(false);
     }
   }, [token, mechanicId]);
 
   const fetchAssignedOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getOrdersByEmployee(mechanicId);
-      console.log("Fetched assigned orders:", data); // Debug: Check order data
+      console.log("Fetching orders for mechanicId:", mechanicId, "with token:", token); // Debug
+      const data = await orderService.getOrdersByEmployee(token, mechanicId); // Pass token
+      console.log("Fetched assigned orders:", data); // Debug
       if (!data || data.length === 0) {
         setOrders([]);
         setLoading(false);
@@ -47,8 +51,8 @@ const AssignedOrders = () => {
       );
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching assigned orders:", error);
-      setError("Failed to load assigned orders. Check server logs or ensure the backend is running.");
+      console.error("Error fetching assigned orders:", error.message, error.stack); // Enhanced logging
+      setError(`Failed to load assigned orders: ${error.message}. Check server logs or ensure the backend is running.`);
       setLoading(false);
     }
   };
@@ -203,7 +207,7 @@ const AssignedOrders = () => {
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => {
-                    console.log(`Order ${order.order_id} status: ${order.order_status}`); // Debug: Log each order's status
+                    console.log(`Order ${order.order_id} status: ${order.order_status}`); // Debug
                     const status = statusColors[order.order_status];
                     const customerFullName = `${order.customer_first_name} ${order.customer_last_name}`;
                     const vehicleDisplay = `${order.vehicle_make} ${order.vehicle_model} (${order.vehicle_tag})`;

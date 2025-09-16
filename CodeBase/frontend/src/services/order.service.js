@@ -48,10 +48,28 @@ const assignMechanic = async (token, orderId, employeeId) => {
   return response.json();
 };
 
+// Get orders by employee
+const getOrdersByEmployee = async (token, employeeId) => {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': token
+    }
+  };
+  const response = await fetch(`${api_url}/api/orders/employee/${employeeId}`, requestOptions);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data.data || [];
+};
+
 const orderService = {
   createOrder,
   getAllOrders,
   assignMechanic,
+  getOrdersByEmployee
 };
 
 export default orderService;

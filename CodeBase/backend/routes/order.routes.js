@@ -31,4 +31,11 @@ router.patch(
   orderController.assignMechanic
 );
 
+// Get orders by employee (requires authentication)
+router.get(
+  "/api/orders/employee/:employeeId",
+  [authMiddleware.verifyToken],
+  orderController.getOrdersByEmployee
+);
+
 module.exports = router;

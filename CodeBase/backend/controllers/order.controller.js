@@ -146,9 +146,35 @@ async function assignMechanic(req, res, next) {
   }
 }
 
+// Controller: Get Orders by Employee
+async function getOrdersByEmployee(req, res, next) {
+  try {
+    const { employeeId } = req.params;
+    if (!employeeId) {
+      return res.status(400).json({
+        status: "error",
+        message: "Valid employeeId is required",
+      });
+    }
+
+    const orders = await orderService.getOrdersByEmployee(parseInt(employeeId));
+    res.status(200).json({
+      status: "success",
+      data: orders
+    });
+  } catch (err) {
+    console.error("Error in getOrdersByEmployee:", err);
+    res.status(500).json({
+      status: "error",
+      message: err.message || "Something went wrong!"
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
   updateOrderStatus,
   assignMechanic,
+  getOrdersByEmployee
 };
