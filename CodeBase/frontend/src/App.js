@@ -27,6 +27,7 @@ import AddCustomerRec from "./markup/components/Admin/EmployeeDashboard/AddCusto
 import AppointmentList from "./markup/components/Admin/EmployeeDashboard/AppointmentList";
 import CustomerListRec from "./markup/components/Admin/EmployeeDashboard/CustomerListRec";
 import AddVehicleRec from "./markup/components/Admin/EmployeeDashboard/AddVehicleRec";
+import AddOrderRec from "./markup/components/Admin/EmployeeDashboard/AddOrderRec";
 
 // Styles
 import "./assets/template_assets/css/bootstrap.css";
@@ -63,6 +64,7 @@ function App() {
         <Route path="/employee/appointments" element={<AppointmentList />} />
         <Route path="/employee/customers" element={<CustomerListRec />} />
         <Route path="/employee/add-vehicle" element={<AddVehicleRec />} />
+        <Route path="/employee/add-orders" element={<AddOrderRec />} />
   
 
 

@@ -6,26 +6,35 @@ async function createService(req, res, next) {
     const { service_name, service_description } = req.body;
 
     if (!service_name) {
-      return res.status(400).json({ error: "Service name is required!" });
+      return res.status(400).json({
+        status: "error",
+        message: "Service name is required",
+      });
     }
 
     const newService = await serviceService.createService({
       service_name,
-      service_description
+      service_description: service_description || null,
     });
 
     if (!newService) {
-      return res.status(400).json({ error: "Failed to add service!" });
+      return res.status(400).json({
+        status: "error",
+        message: "Failed to create service",
+      });
     }
 
-    res.status(200).json({
-      status: true,
-      message: "Service added successfully",
-      service: newService
+    res.status(201).json({
+      status: "success",
+      message: "Service created successfully",
+      data: newService,
     });
-  } catch (error) {
-    console.error("Error in createService:", error);
-    res.status(500).json({ error: "Something went wrong!" });
+  } catch (err) {
+    console.error("Error in createService:", err.message, err.stack);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to create service",
+    });
   }
 }
 
@@ -46,7 +55,7 @@ async function getAllServices(req, res, next) {
       data: services,
     });
   } catch (err) {
-    console.error("Error in getAllServices:", err);
+    console.error("Error in getAllServices:", err.message, err.stack);
     res.status(500).json({
       status: "error",
       message: "Failed to fetch services",
@@ -54,31 +63,45 @@ async function getAllServices(req, res, next) {
   }
 }
 
-// NEW: Update service
+// Update service
 async function updateService(req, res, next) {
   try {
     const { id } = req.params;
     const { service_name, service_description } = req.body;
 
-    if (!service_name) {
-      return res.status(400).json({ error: "Service name is required!" });
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        status: "error",
+        message: "Valid service ID is required",
+      });
     }
 
-    const updatedService = await serviceService.updateService(id, { service_name, service_description });
+    if (!service_name) {
+      return res.status(400).json({
+        status: "error",
+        message: "Service name is required",
+      });
+    }
+
+    const updatedService = await serviceService.updateService(parseInt(id), {
+      service_name,
+      service_description: service_description || null,
+    });
+
     if (!updatedService) {
       return res.status(404).json({
         status: "error",
-        message: "Service not found",
+        message: "Service not found or update failed",
       });
     }
 
     res.status(200).json({
       status: "success",
       message: "Service updated successfully",
-      service: updatedService,
+      data: updatedService,
     });
   } catch (err) {
-    console.error("Error in updateService:", err);
+    console.error("Error in updateService:", err.message, err.stack);
     res.status(500).json({
       status: "error",
       message: "Failed to update service",
@@ -86,15 +109,23 @@ async function updateService(req, res, next) {
   }
 }
 
-// NEW: Delete service
+// Delete service
 async function deleteService(req, res, next) {
   try {
     const { id } = req.params;
-    const deleted = await serviceService.deleteService(id);
+
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        status: "error",
+        message: "Valid service ID is required",
+      });
+    }
+
+    const deleted = await serviceService.deleteService(parseInt(id));
     if (!deleted) {
       return res.status(404).json({
         status: "error",
-        message: "Service not found",
+        message: "Service not found or deletion failed",
       });
     }
 
@@ -103,7 +134,7 @@ async function deleteService(req, res, next) {
       message: "Service deleted successfully",
     });
   } catch (err) {
-    console.error("Error in deleteService:", err);
+    console.error("Error in deleteService:", err.message, err.stack);
     res.status(500).json({
       status: "error",
       message: "Failed to delete service",

@@ -3,35 +3,35 @@ const router = express.Router();
 const orderController = require('../controllers/order.controller');
 const authMiddleware = require("../middlewares/auth.middleware");
 
-// Create a new order (requires authentication)
+// Create a new order (restricted to admins and receptionists)
 router.post(
   "/api/orders",
-  [authMiddleware.verifyToken],
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrReceptionist],
   orderController.createOrder
 );
 
-// Get all orders (requires authentication)
+// Get all orders (restricted to admins and receptionists)
 router.get(
   "/api/orders",
-  [authMiddleware.verifyToken],
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrReceptionist],
   orderController.getAllOrders
 );
 
-// Update order status (requires authentication)
+// Update order status (restricted to admins)
 router.patch(
   "/api/orders/:orderId/status",
-  [authMiddleware.verifyToken],
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
   orderController.updateOrderStatus
 );
 
-// Assign mechanic to order (requires authentication)
+// Assign mechanic to order (restricted to admins)
 router.patch(
   "/api/orders/:orderId/assign",
-  [authMiddleware.verifyToken],
+  [authMiddleware.verifyToken, authMiddleware.isAdmin],
   orderController.assignMechanic
 );
 
-// Get orders by employee (requires authentication)
+// Get orders by employee (accessible to all authenticated employees)
 router.get(
   "/api/orders/employee/:employeeId",
   [authMiddleware.verifyToken],

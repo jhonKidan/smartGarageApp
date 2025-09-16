@@ -5,9 +5,16 @@ const bcrypt = require('bcrypt');
 async function createOrder(req, res, next) {
   try {
     const { customer_id, vehicle_id, selected_services, additional_request, total_price } = req.body;
-    const employee_id = req.employee?.employee_id || 1; // Fallback to 1 for testing; replace with token extraction
+    const employee_id = req.employee?.employee_id;
 
     console.log('Received Order Data:', { customer_id, vehicle_id, selected_services, additional_request, total_price, employee_id });
+
+    if (!employee_id) {
+      return res.status(401).json({
+        status: "error",
+        message: "Authenticated employee ID is required",
+      });
+    }
 
     if (!customer_id || !vehicle_id || !selected_services || !Array.isArray(selected_services) || selected_services.length === 0) {
       return res.status(400).json({
@@ -16,10 +23,10 @@ async function createOrder(req, res, next) {
       });
     }
 
-    if (!employee_id) {
+    if (isNaN(customer_id) || isNaN(vehicle_id) || isNaN(total_price)) {
       return res.status(400).json({
         status: "error",
-        message: "Employee ID is required",
+        message: "Customer ID, Vehicle ID, and total price must be valid numbers",
       });
     }
 
@@ -27,20 +34,19 @@ async function createOrder(req, res, next) {
     const orderHash = await bcrypt.hash(`${customer_id}-${vehicle_id}-${Date.now()}`, salt);
 
     const orderData = {
-      employee_id,
+      employee_id: parseInt(employee_id),
       customer_id: parseInt(customer_id),
       vehicle_id: parseInt(vehicle_id),
       order_hash: orderHash,
       selected_services: selected_services.map(id => parseInt(id)),
       additional_request: additional_request || '',
       total_price: parseInt(total_price) || 0,
-      estimated_completion_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      estimated_completion_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     };
 
     console.log('Processed Order Data:', orderData);
 
     const newOrder = await orderService.createOrder(orderData);
-
     if (!newOrder) {
       return res.status(400).json({
         status: "error",
@@ -53,10 +59,10 @@ async function createOrder(req, res, next) {
       data: newOrder,
     });
   } catch (err) {
-    console.error("Error in createOrder:", err);
+    console.error("Error in createOrder:", err.message, err.stack);
     res.status(500).json({
       status: "error",
-      message: err.message || "Something went wrong!",
+      message: "Failed to create order",
     });
   }
 }
@@ -67,13 +73,13 @@ async function getAllOrders(req, res, next) {
     const orders = await orderService.getAllOrders();
     res.status(200).json({
       status: "success",
-      data: orders
+      data: orders,
     });
   } catch (err) {
-    console.error("Error in getAllOrders:", err);
+    console.error("Error in getAllOrders:", err.message, err.stack);
     res.status(500).json({
       status: "error",
-      message: err.message || "Something went wrong!"
+      message: "Failed to fetch orders",
     });
   }
 }
@@ -84,7 +90,7 @@ async function updateOrderStatus(req, res, next) {
     const { orderId } = req.params;
     const { order_status } = req.body;
 
-    if (!orderId || !order_status || ![1, 2, 3].includes(parseInt(order_status))) {
+    if (!orderId || isNaN(orderId) || !order_status || ![1, 2, 3].includes(parseInt(order_status))) {
       return res.status(400).json({
         status: "error",
         message: "Valid orderId and order_status (1, 2, or 3) are required",
@@ -104,10 +110,10 @@ async function updateOrderStatus(req, res, next) {
       message: "Order status updated successfully",
     });
   } catch (err) {
-    console.error("Error in updateOrderStatus:", err);
+    console.error("Error in updateOrderStatus:", err.message, err.stack);
     res.status(500).json({
       status: "error",
-      message: err.message || "Something went wrong!"
+      message: "Failed to update order status",
     });
   }
 }
@@ -118,7 +124,7 @@ async function assignMechanic(req, res, next) {
     const { orderId } = req.params;
     const { employee_id } = req.body;
 
-    if (!orderId || !employee_id) {
+    if (!orderId || isNaN(orderId) || !employee_id || isNaN(employee_id)) {
       return res.status(400).json({
         status: "error",
         message: "Valid orderId and employee_id are required",
@@ -138,10 +144,10 @@ async function assignMechanic(req, res, next) {
       message: "Mechanic assigned successfully",
     });
   } catch (err) {
-    console.error("Error in assignMechanic:", err);
+    console.error("Error in assignMechanic:", err.message, err.stack);
     res.status(500).json({
       status: "error",
-      message: err.message || "Something went wrong!"
+      message: "Failed to assign mechanic",
     });
   }
 }
@@ -150,7 +156,7 @@ async function assignMechanic(req, res, next) {
 async function getOrdersByEmployee(req, res, next) {
   try {
     const { employeeId } = req.params;
-    if (!employeeId) {
+    if (!employeeId || isNaN(employeeId)) {
       return res.status(400).json({
         status: "error",
         message: "Valid employeeId is required",
@@ -160,13 +166,13 @@ async function getOrdersByEmployee(req, res, next) {
     const orders = await orderService.getOrdersByEmployee(parseInt(employeeId));
     res.status(200).json({
       status: "success",
-      data: orders
+      data: orders,
     });
   } catch (err) {
-    console.error("Error in getOrdersByEmployee:", err);
+    console.error("Error in getOrdersByEmployee:", err.message, err.stack);
     res.status(500).json({
       status: "error",
-      message: err.message || "Something went wrong!"
+      message: "Failed to fetch orders",
     });
   }
 }
@@ -176,5 +182,5 @@ module.exports = {
   getAllOrders,
   updateOrderStatus,
   assignMechanic,
-  getOrdersByEmployee
+  getOrdersByEmployee,
 };

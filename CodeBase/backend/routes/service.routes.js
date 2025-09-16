@@ -3,27 +3,31 @@ const router = express.Router();
 const serviceController = require('../controllers/service.controller');
 const authMiddleware = require("../middlewares/auth.middleware");
 
-// Create service
-router.post("/api/service", serviceController.createService);
+// Create service (restricted to admins and receptionists)
+router.post(
+  "/api/service",
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrReceptionist],
+  serviceController.createService
+);
 
-// Get all services (only admin allowed)
+// Get all services (restricted to admins and receptionists)
 router.get(
   "/api/services",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrReceptionist],
   serviceController.getAllServices
 );
 
-// NEW: Update service
+// Update service (restricted to admins and receptionists)
 router.put(
   "/api/service/:id",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrReceptionist],
   serviceController.updateService
 );
 
-// NEW: Delete service
+// Delete service (restricted to admins and receptionists)
 router.delete(
   "/api/service/:id",
-  [authMiddleware.verifyToken, authMiddleware.isAdmin],
+  [authMiddleware.verifyToken, authMiddleware.isAdminOrReceptionist],
   serviceController.deleteService
 );
 
