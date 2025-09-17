@@ -279,6 +279,85 @@ async function deleteOrder(orderId) {
   }
 }
 
+// Public search orders by customer first name, last name, and phone number
+async function publicSearchOrders({ first_name, last_name, phone_number }) {
+  try {
+    // Sanitize inputs to prevent SQL injection
+    const sanitizedFirstName = first_name ? `%${first_name.replace(/[^a-zA-Z0-9 ]/g, '')}%` : '';
+    const sanitizedLastName = last_name ? `%${last_name.replace(/[^a-zA-Z0-9 ]/g, '')}%` : '';
+    const sanitizedPhoneNumber = phone_number ? phone_number.replace(/[^0-9]/g, '').slice(0, 15) : '';
+
+    // Ensure all fields are provided
+    if (!sanitizedFirstName || !sanitizedLastName || !sanitizedPhoneNumber) {
+      throw new Error('All search criteria (first name, last name, phone number) are required');
+    }
+
+    // Validate phone number length
+    if (sanitizedPhoneNumber.length < 3) {
+      throw new Error('Phone number must be at least 3 digits');
+    }
+
+    const query = `
+      SELECT 
+        o.order_id,
+        ci.customer_first_name AS first_name,
+        ci.customer_last_name AS last_name,
+        cid.customer_email,
+        cid.customer_phone_number AS phone_number,
+        cvi.vehicle_make,
+        cvi.vehicle_model,
+        cvi.vehicle_tag,
+        os.order_status,
+        o.order_date,
+        oi.additional_request AS service_description,
+        GROUP_CONCAT(cs.service_name) AS services,
+        ei.employee_first_name,
+        ei.employee_last_name
+      FROM orders o
+      INNER JOIN order_status os ON o.order_id = os.order_id
+      INNER JOIN customer_info ci ON o.customer_id = ci.customer_id
+      INNER JOIN customer_identifier cid ON ci.customer_id = cid.customer_id
+      INNER JOIN customer_vehicle_info cvi ON o.vehicle_id = cvi.vehicle_id
+      LEFT JOIN employee e ON o.employee_id = e.employee_id
+      LEFT JOIN employee_info ei ON e.employee_id = ei.employee_id
+      INNER JOIN order_services osv ON o.order_id = osv.order_id
+      INNER JOIN common_services cs ON osv.service_id = cs.service_id
+      INNER JOIN order_info oi ON o.order_id = oi.order_id
+      WHERE ci.customer_first_name LIKE ?
+        AND ci.customer_last_name LIKE ?
+        AND cid.customer_phone_number = ?
+      GROUP BY 
+        o.order_id,
+        ci.customer_first_name,
+        ci.customer_last_name,
+        cid.customer_email,
+        cid.customer_phone_number,
+        cvi.vehicle_make,
+        cvi.vehicle_model,
+        cvi.vehicle_tag,
+        os.order_status,
+        o.order_date,
+        oi.additional_request,
+        ei.employee_first_name,
+        ei.employee_last_name
+      ORDER BY o.order_id DESC
+    `;
+    const rows = await conn.query(query, [
+      sanitizedFirstName,
+      sanitizedLastName,
+      sanitizedPhoneNumber,
+    ]);
+
+    return rows.map(row => ({
+      ...row,
+      services: row.services ? row.services.split(',') : [], // Convert comma-separated services to array
+    }));
+  } catch (err) {
+    console.error("Service Error in publicSearchOrders:", err.message, err.stack);
+    throw err;
+  }
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
@@ -286,4 +365,5 @@ module.exports = {
   assignMechanic,
   getOrdersByEmployee,
   deleteOrder,
+  publicSearchOrders,
 };

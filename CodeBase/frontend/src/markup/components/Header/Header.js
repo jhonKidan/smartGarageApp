@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';  
+import { NavLink, useNavigate } from 'react-router-dom';
 import logoTwo from '../../../assets/images/logo-two.png';
 import iconBar from '../../../assets/images/icons/icon-bar.png';
 import customLogo from '../../../assets/images/custom/image2.png';
@@ -9,15 +9,33 @@ import '../../../assets/styles/custom.css';
 
 function Header() {
   const { isLogged, setIsLogged, employee } = useAuth();
+  const navigate = useNavigate();
 
   const logOut = () => {
     loginService.logOut();
     setIsLogged(false);
+    navigate('/'); // Redirect to home after logout
+  };
+
+  // Determine the logo destination based on user role
+  const getLogoDestination = () => {
+    if (!isLogged) {
+      return '/';
+    }
+    switch (employee?.employee_role) {
+      case 3: // Admin
+        return '/admin/dashboard';
+      case 2: // Receptionist
+        return '/';
+      case 1: // Mechanic/Employee
+        return '/';
+      default:
+        return '/';
+    }
   };
 
   return (
     <header className="main-header header-style-one">
-
       {/* Header Top */}
       <div className="header-top">
         <div className="auto-container">
@@ -29,11 +47,11 @@ function Header() {
             <div className="right-column">
               {isLogged ? (
                 <div className="phone-number">
-                  Welcome :<strong>{employee?.employee_first_name}</strong>
+                  Welcome: <strong>{employee?.employee_first_name}</strong>
                 </div>
               ) : (
                 <div className="phone-number">
-                  Schedule Your Appointment Today : <strong>+251 910 289 407</strong>
+                  Schedule Your Appointment Today: <strong>+251 910 289 407</strong>
                 </div>
               )}
             </div>
@@ -48,13 +66,14 @@ function Header() {
             {/* Logo */}
             <div className="logo-box">
               <div className="logo">
-                <NavLink to="/admin/dashboard"><img src={customLogo} alt="Logo" /></NavLink> {/* optional to use NavLink here */}
+                <NavLink to={getLogoDestination()}>
+                  <img src={customLogo} alt="Logo" />
+                </NavLink>
               </div>
             </div>
 
             {/* Right Column */}
             <div className="right-column">
-              {/* Nav Box */}
               <div className="nav-outer">
                 <div className="mobile-nav-toggler">
                   <img src={iconBar} alt="Menu" />
@@ -65,16 +84,24 @@ function Header() {
                   <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
                     <ul className="navigation">
                       <li>
-                        <NavLink exact to="/" activeClassName="active">Home</NavLink>
+                        <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+                          Home
+                        </NavLink>
                       </li>
                       <li>
-                        <NavLink to="/about" activeClassName="active">About Us</NavLink>
+                        <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
+                          About Us
+                        </NavLink>
                       </li>
                       <li>
-                        <NavLink to="/services" activeClassName="active">Services</NavLink>
+                        <NavLink to="/services" className={({ isActive }) => (isActive ? 'active' : '')}>
+                          Services
+                        </NavLink>
                       </li>
                       <li>
-                        <NavLink to="/contact" activeClassName="active">Contact Us</NavLink>
+                        <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : '')}>
+                          Contact Us
+                        </NavLink>
                       </li>
                     </ul>
                   </div>
@@ -85,9 +112,13 @@ function Header() {
 
               <div className="link-btn">
                 {isLogged ? (
-                  <NavLink to="/" className="theme-btn btn-style-one blue" onClick={logOut}>Log out</NavLink>
+                  <NavLink to="/" className="theme-btn btn-style-one blue" onClick={logOut}>
+                    Log out
+                  </NavLink>
                 ) : (
-                  <NavLink to="/login" className="theme-btn btn-style-one">Login</NavLink>
+                  <NavLink to="/login" className="theme-btn btn-style-one">
+                    Login
+                  </NavLink>
                 )}
               </div>
             </div>
@@ -101,22 +132,32 @@ function Header() {
           <div className="auto-container">
             <div className="inner-container">
               <div className="logo-box">
-                <NavLink to="/admin"><img src={customLogo} alt="Sticky Logo" /></NavLink>
+                <NavLink to={getLogoDestination()}>
+                  <img src={customLogo} alt="Sticky Logo" />
+                </NavLink>
               </div>
               <nav className="main-menu navbar-expand-md navbar-light">
                 <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
                   <ul className="navigation">
                     <li>
-                      <NavLink exact to="/" activeClassName="active">Home</NavLink>
+                      <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+                        Home
+                      </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/about" activeClassName="active">About Us</NavLink>
+                      <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
+                        About Us
+                      </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/services" activeClassName="active">Services</NavLink>
+                      <NavLink to="/services" className={({ isActive }) => (isActive ? 'active' : '')}>
+                        Services
+                      </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/contact" activeClassName="active">Contact Us</NavLink>
+                      <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : '')}>
+                        Contact Us
+                      </NavLink>
                     </li>
                   </ul>
                 </div>
@@ -126,16 +167,18 @@ function Header() {
                   <div className="mobile-nav-toggler">
                     <img src={iconBar} alt="Menu" />
                   </div>
-                  <nav className="main-menu navbar-expand-md navbar-light">
-                    {/* Can add sticky menu here if needed */}
-                  </nav>
+                  <nav className="main-menu navbar-expand-md navbar-light"></nav>
                 </div>
                 <div className="search-btn"></div>
                 <div className="link-btn">
                   {isLogged ? (
-                    <NavLink to="/" className="theme-btn btn-style-one blue" onClick={logOut}>Log out</NavLink>
+                    <NavLink to="/" className="theme-btn btn-style-one blue" onClick={logOut}>
+                      Log out
+                    </NavLink>
                   ) : (
-                    <NavLink to="/login" className="theme-btn btn-style-one">Login</NavLink>
+                    <NavLink to="/login" className="theme-btn btn-style-one">
+                      Login
+                    </NavLink>
                   )}
                 </div>
               </div>
@@ -147,17 +190,17 @@ function Header() {
       {/* Mobile Menu */}
       <div className="mobile-menu">
         <div className="menu-backdrop"></div>
-        <div className="close-btn"><span className="icon flaticon-remove"></span></div>
+        <div className="close-btn">
+          <span className="icon flaticon-remove"></span>
+        </div>
 
         <nav className="menu-box">
           <div className="nav-logo">
-            <NavLink to="/">
+            <NavLink to={getLogoDestination()}>
               <img src={logoTwo} alt="Mobile Logo" />
             </NavLink>
           </div>
-          <div className="menu-outer">
-            {/* Menu will be generated via JavaScript if needed */}
-          </div>
+          <div className="menu-outer">{/* Dynamic Menu */}</div>
         </nav>
       </div>
 

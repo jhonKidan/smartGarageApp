@@ -45,4 +45,10 @@ router.get(
   orderController.getOrdersByEmployee
 );
 
+// Public search orders (no authentication required)
+router.post(
+  "/api/orders/public-search",
+  orderController.publicSearchOrders
+);
+
 module.exports = router;

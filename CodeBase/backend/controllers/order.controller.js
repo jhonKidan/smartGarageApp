@@ -222,6 +222,33 @@ async function deleteOrder(req, res, next) {
   }
 }
 
+// Controller: Public Search Orders
+async function publicSearchOrders(req, res, next) {
+  try {
+    const { first_name, last_name, phone_number } = req.body;
+
+    if (!first_name && !last_name && !phone_number) {
+      return res.status(400).json({
+        status: "error",
+        message: "At least one search criterion (first name, last name, or phone number) is required",
+      });
+    }
+
+    const orders = await orderService.publicSearchOrders({ first_name, last_name, phone_number });
+
+    res.status(200).json({
+      status: "success",
+      data: orders,
+    });
+  } catch (err) {
+    console.error("Error in publicSearchOrders:", err.message, err.stack);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to fetch orders",
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
@@ -229,4 +256,5 @@ module.exports = {
   assignMechanic,
   getOrdersByEmployee,
   deleteOrder,
+  publicSearchOrders,
 };
