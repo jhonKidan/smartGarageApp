@@ -55,8 +55,8 @@ function OrderStatus() {
     }
 
     // Validate phone number length
-    if (searchCriteria.phone_number.length < 3) {
-      setError('Phone number must be at least 3 digits.');
+    if (searchCriteria.phone_number.length < 2) {
+      setError('Phone number must be at least 2 digits.');
       setLoading(false);
       return;
     }
@@ -80,7 +80,7 @@ function OrderStatus() {
           }))
         );
         if (data.data.length === 0) {
-          setError('No orders found matching the provided criteria.');
+          setError('No orders found matching the provided first name, last name, and phone number.');
         }
       } else {
         setError(data.message || 'Failed to fetch order status. Please try again.');
@@ -97,7 +97,7 @@ function OrderStatus() {
     <section style={{ padding: '20px', backgroundColor: '#f4f7fa' }}>
       <div className="auto-container">
         <h2 style={{ color: '#1a2b49', marginBottom: '20px' }}>Check Your Order Status</h2>
-        <p>Enter your first name, last name, and phone number to view your order progress.</p>
+        <p>Enter your exact first name, last name, and phone number to view your order progress.</p>
 
         {/* Search Form */}
         <Card className="mb-4">

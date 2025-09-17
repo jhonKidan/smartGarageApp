@@ -283,8 +283,8 @@ async function deleteOrder(orderId) {
 async function publicSearchOrders({ first_name, last_name, phone_number }) {
   try {
     // Sanitize inputs to prevent SQL injection
-    const sanitizedFirstName = first_name ? `%${first_name.replace(/[^a-zA-Z0-9 ]/g, '')}%` : '';
-    const sanitizedLastName = last_name ? `%${last_name.replace(/[^a-zA-Z0-9 ]/g, '')}%` : '';
+    const sanitizedFirstName = first_name ? first_name.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 255) : '';
+    const sanitizedLastName = last_name ? last_name.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 255) : '';
     const sanitizedPhoneNumber = phone_number ? phone_number.replace(/[^0-9]/g, '').slice(0, 15) : '';
 
     // Ensure all fields are provided
@@ -293,8 +293,8 @@ async function publicSearchOrders({ first_name, last_name, phone_number }) {
     }
 
     // Validate phone number length
-    if (sanitizedPhoneNumber.length < 3) {
-      throw new Error('Phone number must be at least 3 digits');
+    if (sanitizedPhoneNumber.length < 2) {
+      throw new Error('Phone number must be at least 2 digits');
     }
 
     const query = `
@@ -323,8 +323,8 @@ async function publicSearchOrders({ first_name, last_name, phone_number }) {
       INNER JOIN order_services osv ON o.order_id = osv.order_id
       INNER JOIN common_services cs ON osv.service_id = cs.service_id
       INNER JOIN order_info oi ON o.order_id = oi.order_id
-      WHERE ci.customer_first_name LIKE ?
-        AND ci.customer_last_name LIKE ?
+      WHERE ci.customer_first_name = ?
+        AND ci.customer_last_name = ?
         AND cid.customer_phone_number = ?
       GROUP BY 
         o.order_id,
