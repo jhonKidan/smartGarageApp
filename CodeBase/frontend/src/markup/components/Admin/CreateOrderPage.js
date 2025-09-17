@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Alert, Card, Table, ListGroup, Row, Col } from 'react-bootstrap';
 import { useAuth } from "../../../Contexts/AuthContext";
-import { useNavigate } from 'react-router-dom';
 import '../../../../src/assets/styles/custom.css';
 import customerService from "../../../services/customer.service";
 import vehicleService from "../../../services/vehicle.service";
@@ -34,7 +33,6 @@ const CustomerSearchBar = ({ onSearch, placeholder = "Search customers..." }) =>
 };
 
 const CreateOrderPage = () => {
-  const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [vehicles, setVehicles] = useState([]);
@@ -181,6 +179,9 @@ const CreateOrderPage = () => {
           vehicle_color: ''
         });
         setAlert({ show: true, message: 'Vehicle added successfully!', variant: 'success' });
+        setTimeout(() => {
+          setAlert({ show: false, message: '', variant: 'success' });
+        }, 2000);
       } else {
         throw new Error('Unexpected response from server');
       }
@@ -225,9 +226,12 @@ const CreateOrderPage = () => {
         setTotalPrice(0);
         setAlert({ 
           show: true, 
-          message: 'Order created successfully! You can create another order or return to the orders list.', 
+          message: 'Order created successfully!', 
           variant: 'success' 
         });
+        setTimeout(() => {
+          setAlert({ show: false, message: '', variant: 'success' });
+        }, 2000);
       } else {
         throw new Error('Unexpected response from server');
       }
@@ -259,25 +263,6 @@ const CreateOrderPage = () => {
             style={{ fontWeight: 'bold', fontSize: '1.1rem' }}
           >
             {alert.message}
-            {alert.variant === 'success' && (
-              <div className="mt-2">
-                <Button 
-                  variant="outline-primary" 
-                  size="sm" 
-                  onClick={() => navigate('/admin/orders')}
-                  className="me-2"
-                >
-                  View Orders List
-                </Button>
-                <Button 
-                  variant="outline-secondary" 
-                  size="sm" 
-                  onClick={handleDismissAlert}
-                >
-                  Create Another Order
-                </Button>
-              </div>
-            )}
           </Alert>
         )}
 
@@ -294,7 +279,7 @@ const CreateOrderPage = () => {
               <Col md={4}>
                 <Button 
                   variant="danger" 
-                  onClick={() => navigate("/admin/add-customer")}
+                  onClick={() => window.location.href="/admin/add-customer"}
                 >
                   ADD NEW CUSTOMER
                 </Button>

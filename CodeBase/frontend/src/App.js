@@ -29,6 +29,7 @@ import CustomerListRec from "./markup/components/Admin/EmployeeDashboard/Custome
 import AddVehicleRec from "./markup/components/Admin/EmployeeDashboard/AddVehicleRec";
 import AddOrderRec from "./markup/components/Admin/EmployeeDashboard/AddOrderRec";
 import OrderStatus from "./markup/pages/admin/OrderStatus";
+import ServiceListRec from "./markup/components/Admin/EmployeeDashboard/ServiceListRec";
 
 // Styles
 import "./assets/template_assets/css/bootstrap.css";
@@ -59,6 +60,8 @@ function App() {
         <Route path="/admin/add-orders" element={<AddOrders />} />
         <Route path="/admin/orders" element={<AllOrders />} />
         <Route path="/schedule-appointment" element={<Appointment />} />
+        
+        
 
       {/* receptionalist board route */}
         <Route path="/employee/add-customer" element={<AddCustomerRec />} />
@@ -67,6 +70,7 @@ function App() {
         <Route path="/employee/add-vehicle" element={<AddVehicleRec />} />
         <Route path="/employee/add-orders" element={<AddOrderRec />} />
         <Route path="/employee/order-status" element={<OrderStatus />} />
+        <Route path="/employee/service-list" element={<ServiceListRec />} />
   
 
 

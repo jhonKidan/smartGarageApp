@@ -25,7 +25,7 @@ function AddCustomerForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // ✅ Validation
+    // Validation
     let valid = true;
     if (!customer_first_name) {
       setFirstNameRequired('First name is required');
@@ -49,7 +49,7 @@ function AddCustomerForm() {
 
     if (!valid) return;
 
-    // ✅ Send form data
+    // Send form data
     const formData = {
       customer_email,
       customer_first_name,
@@ -67,8 +67,15 @@ function AddCustomerForm() {
         } else {
           setSuccess(true);
           setServerError('');
+          // Reset form fields after successful submission
+          setEmail('');
+          setFirstName('');
+          setLastName('');
+          setPhoneNumber('');
+          setActiveStatus(1);
+          // Clear success message after 2 seconds
           setTimeout(() => {
-            window.location.href = '/admin/customers';
+            setSuccess(false);
           }, 2000);
         }
       })

@@ -12,76 +12,53 @@ function Dashboard() {
                 <div className="row">
                     <div className="col-lg-4 service-block-one">
                         <div className="inner-box hvr-float-shadow">
-                            <h5>OPEN FOR ALL</h5>
-                            <h2>All Orders</h2>
-                            <a href="#" className="read-more">LIST OF ORDERS +</a>
+                            <h5>Total</h5>
+                            <h2>Employee</h2>
+                            <a href="#" className="read-more">Total Employee</a>
                             <div className="icon"><span className="flaticon-power"></span></div>
                         </div>
                     </div>
                     <div className="col-lg-4 service-block-one">
                         <div className="inner-box hvr-float-shadow">
-                            <h5>OPEN FOR LEADS</h5>
-                            <h2>New Orders</h2>
-                            <a href="#" className="read-more">ADD ORDER +</a>
+                            <h5>Total</h5>
+                            <h2>Customer</h2>
+                            <a href="#" className="read-more">Total Customer</a>
                             <div className="icon"><span className="flaticon-gearbox"></span></div>
                         </div>
                     </div>
                     <div className="col-lg-4 service-block-one">
                         <div className="inner-box hvr-float-shadow">
-                            <h5>OPEN FOR ADMINS</h5>
-                            <h2>EMPLOYEES</h2>
-                            <a href="#" className="read-more">LIST OF EMPLOYEES +</a>
+                            <h5>Total</h5>
+                            <h2>Orders</h2>
+                            <a href="#" className="read-more">Total Orders</a>
                             <div className="icon"><span className="flaticon-brake-disc"></span></div>
                         </div>
                     </div>
                     <div className="col-lg-4 service-block-one">
                         <div className="inner-box hvr-float-shadow">
-                            <h5>OPEN FOR ADMINS</h5>
-                            <h2>Add Employee</h2>
-                            <a href="#" className="read-more">read more +</a>
+                            <h5>Total</h5>
+                            <h2>Service</h2>
+                            <a href="#" className="read-more">Total Service</a>
                             <div className="icon"><span className="flaticon-tire"></span></div>
                         </div>
                     </div>
                     <div className="col-lg-4 service-block-one">
                         <div className="inner-box hvr-float-shadow">
-                            <h5>SERVICE AND REPAIRS</h5>
-                            <h2>Engine Service</h2>
-                            <a href="#" className="read-more">read more +</a>
+                            <h5>Total</h5>
+                            <h2>Assigned Orders</h2>
+                            <a href="#" className="read-more">Total Assigned</a>
                             <div className="icon"><span className="flaticon-tire"></span></div>
                         </div>
                     </div>
                     <div className="col-lg-4 service-block-one">
                         <div className="inner-box hvr-float-shadow">
-                            <h5>SERVICE AND REPAIRS</h5>
-                            <h2>Tyre & Wheels</h2>
-                            <a href="#" className="read-more">read more +</a>
+                            <h5>Total</h5>
+                            <h2> Complated Order</h2>
+                            <a href="#" className="read-more">Total Completed</a>
                             <div className="icon"><span className="flaticon-spray-gun"></span></div>
                         </div>
                     </div>
-                    <div className="col-lg-4 service-block-one">
-                        <div className="inner-box hvr-float-shadow">
-                            <h5>SERVICE AND REPAIRS</h5>
-                            <h2>Denting & Painting</h2>
-                            <a href="#" className="read-more">read more +</a>
-                            <div className="icon"><span className="flaticon-spray-gun"></span></div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 service-block-one">
-                        <div className="inner-box hvr-float-shadow">
-                            <h5>SERVICE AND REPAIRS</h5>
-                            <h2> Repair</h2>
-                            <a href="#" className="read-more">read more +</a>
-                            <div className="icon"><span className="flaticon-spray-gun"></span></div>
-                        </div>
-                    </div>
-                    <div className="col-lg-4 service-block-one">
-                        <div className="inner-box hvr-float-shadow">
-                            <h5>SERVICE AND REPAIRS</h5>
-                            <h2>Tyre & Wheels</h2>
-                            <a href="#" className="read-more">read more +</a>
-                            <div className="icon"><span className="flaticon-spray-gun"></span></div>
-                        </div>
-                    </div>
+                   
                 </div>
             </div>
         </section>
