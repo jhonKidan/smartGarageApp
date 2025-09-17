@@ -24,7 +24,7 @@ import AssignedOrders from "./markup/pages/admin/AssignedOrders";
 
 //import receptionist menu
 import AddCustomerRec from "./markup/components/Admin/EmployeeDashboard/AddCustomerRec";
-import AppointmentList from "./markup/components/Admin/EmployeeDashboard/AppointmentList";
+import AppointmentListRec from "./markup/components/Admin/EmployeeDashboard/AppointmentListRec";
 import CustomerListRec from "./markup/components/Admin/EmployeeDashboard/CustomerListRec";
 import AddVehicleRec from "./markup/components/Admin/EmployeeDashboard/AddVehicleRec";
 import AddOrderRec from "./markup/components/Admin/EmployeeDashboard/AddOrderRec";
@@ -65,7 +65,7 @@ function App() {
 
       {/* receptionalist board route */}
         <Route path="/employee/add-customer" element={<AddCustomerRec />} />
-        <Route path="/employee/appointments" element={<AppointmentList />} />
+        <Route path="/employee/appointments" element={<AppointmentListRec />} />
         <Route path="/employee/customers" element={<CustomerListRec />} />
         <Route path="/employee/add-vehicle" element={<AddVehicleRec />} />
         <Route path="/employee/add-orders" element={<AddOrderRec />} />
