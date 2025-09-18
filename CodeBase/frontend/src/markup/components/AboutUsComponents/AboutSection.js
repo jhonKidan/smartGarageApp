@@ -1,5 +1,5 @@
 import React from 'react'
-import image8 from '../../../assets/images/image-8.jpg';
+import image8 from '../../../assets/images/image-3.jpg';
 
 function AboutSection() {
   return (

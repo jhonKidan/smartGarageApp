@@ -30,7 +30,7 @@ function AboutUsSec() {
                 </p>
               </div>
               <div className="link-btn mt-40">
-                <a href="about.html" className="theme-btn btn-style-one style-two">
+                <a href="/about" className="theme-btn btn-style-one style-two">
                   <span>
                     About Us <i className="flaticon-right"></i>
                   </span>

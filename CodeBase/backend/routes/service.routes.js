@@ -17,6 +17,12 @@ router.get(
   serviceController.getAllServices
 );
 
+// NEW: Public endpoint to get all services (no authentication required)
+router.get(
+  "/api/public/services",
+  serviceController.getAllServices
+);
+
 // Update service (restricted to admins and receptionists)
 router.put(
   "/api/service/:id",

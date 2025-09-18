@@ -151,7 +151,7 @@ const AddVehiclePage = () => {
               <p>Email: {selectedCustomer.customer_email}</p>
               <p>Phone Number: {selectedCustomer.customer_phone_number}</p>
               <p>Active Customer: {selectedCustomer.active_customer_status ? 'Yes' : 'No'}</p>
-              <a href="#" style={{ color: '#dc3545' }}>Edit customer info</a>
+              {/* <a href="#" style={{ color: '#dc3545' }}>Edit customer info</a> */}
             </Card.Body>
           </Card>
         )}

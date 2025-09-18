@@ -13,7 +13,7 @@ const createService = async (formData, loggedInEmployeeToken) => {
   return fetch(`${api_url}/api/service`, requestOptions);
 };
 
-// Get all services
+// Get all services (requires authentication)
 const getAllServices = async (token) => {
   const requestOptions = {
     method: "GET",
@@ -25,7 +25,18 @@ const getAllServices = async (token) => {
   return fetch(`${api_url}/api/services`, requestOptions);
 };
 
-// NEW: Update service
+// NEW: Get all services without authentication
+const getAllPublicServices = async () => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(`${api_url}/api/public/services`, requestOptions);
+};
+
+// Update service
 const updateService = async (token, id, serviceData) => {
   const requestOptions = {
     method: "PUT",
@@ -38,7 +49,7 @@ const updateService = async (token, id, serviceData) => {
   return fetch(`${api_url}/api/service/${id}`, requestOptions);
 };
 
-// NEW: Delete service
+// Delete service
 const deleteService = async (token, id) => {
   const requestOptions = {
     method: "DELETE",
@@ -53,6 +64,7 @@ const deleteService = async (token, id) => {
 const serviceService = {
   createService,
   getAllServices,
+  getAllPublicServices, // Add the new function
   updateService,
   deleteService,
 };

@@ -1,5 +1,5 @@
 import React from 'react'
-import featureImage from '../../../assets/images/image-3.jpg';
+import featureImage from '../../../assets/images/image-7.jpg';
 
 function QualityService() {
   return (
