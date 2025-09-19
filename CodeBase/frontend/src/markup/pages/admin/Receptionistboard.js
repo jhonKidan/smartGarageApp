@@ -1,5 +1,6 @@
 import React from 'react'
 import ReceptionistDashboard from '../../components/Admin/EmployeeDashboard/ReceptionistDashboard'
+import ReceptionistWelcomePage from '../../components/Admin/EmployeeDashboard/eceptionistWelcomePage'
 
 function Receptionistboard() {
   return (
@@ -10,7 +11,7 @@ function Receptionistboard() {
             <ReceptionistDashboard />
           </div>
           <div className="col-md-9 admin-right-side">
-          
+          <ReceptionistWelcomePage/>
           </div>
         </div>
       </div>

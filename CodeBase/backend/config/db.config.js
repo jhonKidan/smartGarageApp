@@ -9,10 +9,9 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig);
 
-
 async function query(sql, params) {
   const [rows] = await pool.execute(sql, params);
   return rows;
 }
 
-export { query };
+export { query, pool };

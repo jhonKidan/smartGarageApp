@@ -333,7 +333,7 @@ const CreateOrderPage = () => {
               <p>Email: {selectedCustomer.customer_email}</p>
               <p>Phone Number: {selectedCustomer.customer_phone_number}</p>
               <p>Active Customer: {selectedCustomer.active_customer_status ? 'Yes' : 'No'}</p>
-              {/* <a href="#" style={{ color: '#dc3545' }}>Edit customer info</a> */}
+              <a href="#" style={{ color: '#dc3545' }}>Edit customer info</a>
             </Card.Body>
           </Card>
         )}
@@ -576,7 +576,7 @@ const CreateOrderPage = () => {
             <Button 
               variant="danger" 
               type="submit" 
-              // disabled={loading || selectedServices.length === 0}
+              disabled={loading || selectedServices.length === 0}
             >
               {loading ? 'Submitting...' : 'SUBMIT ORDER'}
             </Button>

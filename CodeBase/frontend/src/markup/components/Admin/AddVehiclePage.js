@@ -202,42 +202,91 @@ const AddVehiclePage = () => {
               <Form onSubmit={handleAddVehicle}>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Year</Form.Label>
-                  <Form.Control type="number" name="vehicle_year" value={formData.vehicle_year} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="number" 
+                    name="vehicle_year" 
+                    value={formData.vehicle_year} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter year "
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Make</Form.Label>
-                  <Form.Control type="text" name="vehicle_make" value={formData.vehicle_make} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="text" 
+                    name="vehicle_make" 
+                    value={formData.vehicle_make} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter make (e.g., Toyota, Ford,Honda)"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Model</Form.Label>
-                  <Form.Control type="text" name="vehicle_model" value={formData.vehicle_model} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="text" 
+                    name="vehicle_model" 
+                    value={formData.vehicle_model} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter model (e.g., Corolla,Camry,Mustang )"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Type</Form.Label>
-                  <Form.Select name="vehicle_type" value={formData.vehicle_type} onChange={handleInputChange} required>
-                    <option value="">Select type</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Truck">Truck</option>
-                    <option value="Hatchback">Hatchback</option>
-                    <option value="Coupe">Coupe</option>
-                  </Form.Select>
+                  <Form.Control 
+                    type="text" 
+                    name="vehicle_type" 
+                    value={formData.vehicle_type} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter vehicle type (e.g., Sedan, SUV, Van)"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Mileage</Form.Label>
-                  <Form.Control type="number" name="vehicle_mileage" value={formData.vehicle_mileage} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="number" 
+                    name="vehicle_mileage" 
+                    value={formData.vehicle_mileage} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter mileage (e.g., 50000)"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Tag</Form.Label>
-                  <Form.Control type="text" name="vehicle_tag" value={formData.vehicle_tag} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="text" 
+                    name="vehicle_tag" 
+                    value={formData.vehicle_tag} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter license plate (e.g., ABC1234)"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Serial</Form.Label>
-                  <Form.Control type="text" name="vehicle_serial" value={formData.vehicle_serial} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="text" 
+                    name="vehicle_serial" 
+                    value={formData.vehicle_serial} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter VIN (e.g., 1HGCM82633A123456)"
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Vehicle Color</Form.Label>
-                  <Form.Control type="text" name="vehicle_color" value={formData.vehicle_color} onChange={handleInputChange} required />
+                  <Form.Control 
+                    type="text" 
+                    name="vehicle_color" 
+                    value={formData.vehicle_color} 
+                    onChange={handleInputChange} 
+                    required 
+                    placeholder="Enter color (e.g., Blue, Red)"
+                  />
                 </Form.Group>
                 <Button variant="danger" type="submit" disabled={loading}>
                   {loading ? 'Adding...' : 'ADD VEHICLE'}
